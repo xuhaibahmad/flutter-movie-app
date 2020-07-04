@@ -35,7 +35,8 @@ class Router extends RouterBase {
         final typedArgs =
             args as MovieListScreenArguments ?? MovieListScreenArguments();
         return MaterialPageRoute<dynamic>(
-          builder: (context) => MovieListScreen(key: typedArgs.key),
+          builder: (context) =>
+              MovieListScreen(key: typedArgs.key).wrappedRoute(context),
           settings: settings,
         );
       default:

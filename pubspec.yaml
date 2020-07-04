@@ -1,5 +1,5 @@
 name: flutter_movie_app
-description: A movie showcase app powered by OMDB API.
+description: A movie showcase app powered by TMDB API.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -40,6 +40,7 @@ dependencies:
   chopper: ^3.0.2
   percent_indicator: ^2.1.4
   webview_flutter: ^0.3.22+1
+  flutter_dotenv: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
