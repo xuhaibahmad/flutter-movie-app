@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie/movie_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
+import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,18 +18,18 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => getIt<MovieListBloc>(),
+        create: (context) => getIt<MovieBloc>(),
         child: this,
       );
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
-  MovieListBloc movieListBloc;
+  MovieBloc movieBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    movieListBloc ??= BlocProvider.of<MovieListBloc>(context)
+    movieBloc ??= BlocProvider.of<MovieBloc>(context)
       ..add(GetNowPlayingMovieListEvent());
   }
 
@@ -53,14 +54,11 @@ class _MovieListScreenState extends State<MovieListScreen> {
             IconButton(
               icon: SvgPicture.asset("assets/search.svg"),
               iconSize: 24,
-              onPressed: () {
-                // TODO: Open search field
-                print("Search Pressed!");
-              },
+              onPressed: () => openSearch(),
             ),
           ],
         ),
-        body: BlocBuilder<MovieListBloc, MovieListState>(
+        body: BlocBuilder<MovieBloc, MovieListState>(
           builder: (context, state) {
             if (state is MovieListLoadingState) {
               return buildLoading();
@@ -71,6 +69,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
             }
           },
         ));
+  }
+
+  openSearch() {
+    showSearch(
+      context: context,
+      delegate: MovieSearchDelegate(movieBloc),
+    );
   }
 
   Widget buildLoading() => ProgressView();
@@ -100,7 +105,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           itemBuilder: (BuildContext context, int index) {
             final movieItem = viewModel.results[index];
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Text(movieItem.title),
             );
           },
@@ -119,15 +124,15 @@ class _MovieListScreenState extends State<MovieListScreen> {
           children: <Widget>[
             FlatButton(
               child: Text("In Theater"),
-              onPressed: () => movieListBloc.add(GetNowPlayingMovieListEvent()),
+              onPressed: () => movieBloc.add(GetNowPlayingMovieListEvent()),
             ),
             FlatButton(
               child: Text("Trending"),
-              onPressed: () => movieListBloc.add(GetTrendingMovieListEvent()),
+              onPressed: () => movieBloc.add(GetTrendingMovieListEvent()),
             ),
             FlatButton(
               child: Text("Coming Soon"),
-              onPressed: () => movieListBloc.add(GetUpcomingMovieListEvent()),
+              onPressed: () => movieBloc.add(GetUpcomingMovieListEvent()),
             ),
           ],
         ),
@@ -151,7 +156,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
               label: Text(item.name),
               selected: viewModel.selectedId == item.id.toString(),
               onSelected: (selected) {
-                movieListBloc.add(GetMovieListByGenreEvent("${item.id}"));
+                movieBloc.add(GetMovieListByGenreEvent("${item.id}"));
               },
             ),
           );
@@ -162,7 +167,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
   @override
   void dispose() {
-    movieListBloc.close();
+    movieBloc.close();
     super.dispose();
   }
 }

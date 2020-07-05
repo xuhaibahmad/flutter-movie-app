@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 part "movie_api.chopper.dart";
 
 const BASE_URL = 'https://api.themoviedb.org/3';
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 const API_KEY = 'TMDB_API_KEY';
 
 @singleton

@@ -82,6 +82,21 @@ class MovieRepository {
     }
   }
 
+  Future<MovieListResponse> search(String query) async {
+    try {
+      if (movieListMemCache.containsKey(query)) {
+        return movieListMemCache[query];
+      }
+      final response = await api.search(query);
+      final result = response.body;
+      movieListMemCache[query] = result;
+      return result;
+    } on Error catch (e) {
+      print(e.stackTrace);
+      return Future.error(MovieListError(e));
+    }
+  }
+
   Future<GenreListResponse> getGenres() async {
     try {
       if (genreListMemCache.containsKey(today)) {
