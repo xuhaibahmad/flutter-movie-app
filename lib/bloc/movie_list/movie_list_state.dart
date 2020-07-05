@@ -8,9 +8,13 @@ class MovieListInitialState extends MovieListState {}
 class MovieListLoadingState extends MovieListState {}
 
 class MovieListLoadedState extends MovieListState {
-  final MovieListViewModel viewModel;
+  final GenreListViewModel genreListViewModel;
+  final MovieListViewModel movieListViewModel;
 
-  MovieListLoadedState(this.viewModel);
+  MovieListLoadedState(
+    this.genreListViewModel,
+    this.movieListViewModel,
+  );
 }
 
 class MovieListErrorState extends MovieListState {

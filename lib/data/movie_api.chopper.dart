@@ -22,4 +22,41 @@ class _$MovieApi extends MovieApi {
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<MovieListResponse, MovieListResponse>($request);
   }
+
+  @override
+  Future<Response<MovieListResponse>> getUpcoming() {
+    final $url = 'https://api.themoviedb.org/3/movie/upcoming';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<MovieListResponse, MovieListResponse>($request);
+  }
+
+  @override
+  Future<Response<MovieListResponse>> getPopular() {
+    final $url = 'https://api.themoviedb.org/3/movie/popular';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<MovieListResponse, MovieListResponse>($request);
+  }
+
+  @override
+  Future<Response<MovieListResponse>> search(String query) {
+    final $url = 'https://api.themoviedb.org/3/search/movie';
+    final $params = <String, dynamic>{'query': query};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<MovieListResponse, MovieListResponse>($request);
+  }
+
+  @override
+  Future<Response<MovieListResponse>> getByGenre(String genreId) {
+    final $url = 'https://api.themoviedb.org/3/discover/movie';
+    final $params = <String, dynamic>{'with_genres': genreId};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<MovieListResponse, MovieListResponse>($request);
+  }
+
+  @override
+  Future<Response<GenreListResponse>> getGenres() {
+    final $url = 'https://api.themoviedb.org/3/genre/movie/list';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<GenreListResponse, GenreListResponse>($request);
+  }
 }
