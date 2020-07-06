@@ -9,18 +9,40 @@ import 'package:meta/meta.dart';
 part 'app_event.dart';
 part 'app_state.dart';
 
-@lazySingleton
+@preResolve
+@singleton
 class AppBloc extends Bloc<AppEvent, AppState>
     with AutoResetLazySingleton<AppEvent, AppState> {
   final AppRepository repository;
 
-  AppBloc(this.repository);
-
-  @override
-  AppState get initialState => AppInitialState();
+  AppBloc(this.repository) : super(getInitialState(repository));
 
   @override
   Stream<AppState> mapEventToState(
     AppEvent event,
-  ) async* {}
+  ) async* {
+    if (event is GetPreferenceEvent) {
+      yield getPreferencesState();
+    } else if (event is UpdateNightModeEvent) {
+      await repository.updateNightMode(event.value);
+      yield getPreferencesState();
+    } else if (event is UpdateContentFilterEvent) {
+      await repository.updateContentFilter(event.value);
+      yield getPreferencesState();
+    }
+  }
+
+  static AppInitialState getInitialState(AppRepository repository) {
+    return AppInitialState(
+      nightModeEnabled: repository.nightModeEnabled,
+      contentFilterEnabled: repository.contentFilterEnabled,
+    );
+  }
+
+  PreferenceUpdatedState getPreferencesState() {
+    return PreferenceUpdatedState(
+      nightModeEnabled: repository.nightModeEnabled,
+      contentFilterEnabled: repository.contentFilterEnabled,
+    );
+  }
 }

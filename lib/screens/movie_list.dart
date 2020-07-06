@@ -5,6 +5,7 @@ import 'package:flutter_movie_app/bloc/movie/movie_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
+import 'package:flutter_movie_app/screens/settings.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
@@ -25,12 +26,14 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 
 class _MovieListScreenState extends State<MovieListScreen> {
   MovieBloc movieBloc;
+  MovieSearchDelegate searchDelegate;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     movieBloc ??= BlocProvider.of<MovieBloc>(context)
       ..add(GetNowPlayingMovieListEvent());
+    searchDelegate = MovieSearchDelegate(movieBloc);
   }
 
   @override
@@ -46,15 +49,19 @@ class _MovieListScreenState extends State<MovieListScreen> {
             icon: SvgPicture.asset("assets/menu.svg"),
             iconSize: 24,
             onPressed: () {
-              // TODO: Open drawer
-              print("Hamburger Pressed!");
+              SettingsSheet.show(context);
             },
           ),
           actions: <Widget>[
             IconButton(
               icon: SvgPicture.asset("assets/search.svg"),
               iconSize: 24,
-              onPressed: () => openSearch(),
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: searchDelegate,
+                );
+              },
             ),
           ],
         ),
@@ -69,13 +76,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
             }
           },
         ));
-  }
-
-  openSearch() {
-    showSearch(
-      context: context,
-      delegate: MovieSearchDelegate(movieBloc),
-    );
   }
 
   Widget buildLoading() => ProgressView();

@@ -14,10 +14,6 @@ import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:get_it/get_it.dart';
 
 Future<void> $initGetIt(GetIt g, {String environment}) async {
-  g.registerLazySingleton<AppBloc>(() => AppBloc(g<AppRepository>()));
-  g.registerLazySingleton<MovieBloc>(
-      () => MovieBloc(repository: g<MovieRepository>()));
-
   //Eager singletons must be registered in the right order
   final appRepository = await AppRepository.create();
   g.registerSingleton<AppRepository>(appRepository);
@@ -26,5 +22,7 @@ Future<void> $initGetIt(GetIt g, {String environment}) async {
   final movieApi = await MovieApi.create(g<EnvironmentInfoProvider>());
   g.registerSingleton<MovieApi>(movieApi);
   g.registerSingleton<MovieRepository>(MovieRepository(g<MovieApi>()));
+  g.registerSingleton<AppBloc>(AppBloc(g<AppRepository>()));
+  g.registerSingleton<MovieBloc>(MovieBloc(repository: g<MovieRepository>()));
   g.registerSingleton<MovieSearchDelegate>(MovieSearchDelegate(g<MovieBloc>()));
 }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
-import 'package:flutter_movie_app/bloc/movie/movie_bloc.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:logging/logging.dart';
 import 'di/injection.dart';
@@ -16,14 +15,11 @@ main() async {
   setupLogging();
   // More of hack to make sure there is enough time for the
   // dependencies to initialze before being used
-  await new Future.delayed(Duration(milliseconds: 100));
+  await new Future.delayed(Duration(milliseconds: 200));
   applySystemColors();
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<AppBloc>(create: (context) => getIt<AppBloc>()),
-        BlocProvider<MovieBloc>(create: (context) => getIt<MovieBloc>()),
-      ],
+    BlocProvider<AppBloc>(
+      create: (context) => getIt<AppBloc>(),
       child: FlutterMoviesApp(),
     ),
   );

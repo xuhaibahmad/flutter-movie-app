@@ -3,12 +3,16 @@ part of 'app_bloc.dart';
 @immutable
 abstract class AppEvent {}
 
-class BottomNavSelectionEvent extends AppEvent {
-  final int index;
+class GetPreferenceEvent extends AppEvent {}
 
-  BottomNavSelectionEvent({this.index = 0});
+class UpdateNightModeEvent extends AppEvent {
+  final bool value;
+
+  UpdateNightModeEvent(this.value);
 }
 
-class LogOutEvent extends AppEvent {}
+class UpdateContentFilterEvent extends AppEvent {
+  final bool value;
 
-class AppAuthenticatedEvent extends AppEvent {}
+  UpdateContentFilterEvent(this.value);
+}

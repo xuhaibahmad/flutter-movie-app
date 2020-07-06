@@ -14,15 +14,13 @@ part 'movie_state.dart';
 
 const EMPTY_STRING = "";
 
-@lazySingleton
+@preResolve
+@singleton
 class MovieBloc extends Bloc<MovieListEvent, MovieListState>
     with AutoResetLazySingleton<MovieListEvent, MovieListState> {
   final MovieRepository repository;
 
-  MovieBloc({this.repository});
-
-  @override
-  MovieListState get initialState => MovieListInitialState();
+  MovieBloc({this.repository}) : super(MovieListInitialState());
 
   @override
   Stream<MovieListState> mapEventToState(
