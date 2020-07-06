@@ -8,13 +8,16 @@ import 'package:flutter_movie_app/data/app_repository.dart';
 import 'package:flutter_movie_app/utils/environment_info.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/data/movie_repository.dart';
+import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
+import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_details/movie_details_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
-import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:get_it/get_it.dart';
 
 Future<void> $initGetIt(GetIt g, {String environment}) async {
+  g.registerLazySingleton<MovieSearchBloc>(
+      () => MovieSearchBloc(repository: g<MovieRepository>()));
   g.registerLazySingleton<MovieDetailsBloc>(
       () => MovieDetailsBloc(repository: g<MovieRepository>()));
   g.registerLazySingleton<MovieListBloc>(
@@ -28,7 +31,7 @@ Future<void> $initGetIt(GetIt g, {String environment}) async {
   final movieApi = await MovieApi.create(g<EnvironmentInfoProvider>());
   g.registerSingleton<MovieApi>(movieApi);
   g.registerSingleton<MovieRepository>(MovieRepository(g<MovieApi>()));
-  g.registerSingleton<AppBloc>(AppBloc(g<AppRepository>()));
   g.registerSingleton<MovieSearchDelegate>(
-      MovieSearchDelegate(g<MovieListBloc>()));
+      MovieSearchDelegate(g<MovieSearchBloc>()));
+  g.registerSingleton<AppBloc>(AppBloc(g<AppRepository>()));
 }

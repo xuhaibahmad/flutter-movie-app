@@ -9,12 +9,6 @@ class GetTrendingMovieListEvent extends MovieListEvent {}
 
 class GetUpcomingMovieListEvent extends MovieListEvent {}
 
-class SearchMoviesEvent extends MovieListEvent {
-  final String query;
-
-  SearchMoviesEvent(this.query);
-}
-
 class GetMovieListByGenreEvent extends MovieListEvent {
   final String genreId;
 

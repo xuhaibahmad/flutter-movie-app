@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:logging/logging.dart';
 import 'di/injection.dart';
@@ -18,8 +18,11 @@ main() async {
   await new Future.delayed(Duration(milliseconds: 200));
   applySystemColors();
   runApp(
-    BlocProvider<AppBloc>(
-      create: (context) => getIt<AppBloc>(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<AppBloc>(create: (_) => getIt<AppBloc>()),
+        BlocProvider<MovieSearchBloc>(create: (_) => getIt<MovieSearchBloc>()),
+      ],
       child: FlutterMoviesApp(),
     ),
   );

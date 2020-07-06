@@ -11,3 +11,7 @@ class MovieListError extends MovieError {
 class MovieDetailsError extends MovieError {
   MovieDetailsError(Error error) : super(error);
 }
+
+class MovieSearchError extends MovieError {
+  MovieSearchError(Error error) : super(error);
+}

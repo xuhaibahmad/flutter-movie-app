@@ -68,20 +68,6 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
       } on MovieListError catch (e) {
         yield MovieListErrorState(e);
       }
-    } else if (event is SearchMoviesEvent) {
-      yield MovieListLoadingState();
-      try {
-        final response = await repository.search(event.query);
-        final movies = MovieListViewModel.fromMovieResponse(response);
-        final genreResponse = await repository.getGenres();
-        final genres = GenreListViewModel.fromGenreResponse(
-          EMPTY_STRING,
-          genreResponse,
-        );
-        yield MovieListLoadedState(genres, movies);
-      } on MovieListError catch (e) {
-        yield MovieListErrorState(e);
-      }
     } else if (event is GetMovieListByGenreEvent) {
       yield MovieListLoadingState();
       try {

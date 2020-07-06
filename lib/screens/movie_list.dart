@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
@@ -19,29 +20,28 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
   _MovieListScreenState createState() => _MovieListScreenState();
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => getIt<MovieListBloc>(),
+  Widget wrappedRoute(BuildContext context) => BlocProvider<MovieListBloc>(
+        create: (_) => getIt<MovieListBloc>(),
         child: this,
       );
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
   MovieListBloc movieBloc;
-  MovieSearchDelegate searchDelegate;
+  MovieSearchBloc searchBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    searchBloc ??= BlocProvider.of<MovieSearchBloc>(context);
     movieBloc ??= BlocProvider.of<MovieListBloc>(context)
       ..add(GetNowPlayingMovieListEvent());
-    searchDelegate = MovieSearchDelegate(movieBloc);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      //extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -49,20 +49,16 @@ class _MovieListScreenState extends State<MovieListScreen> {
         leading: IconButton(
           icon: SvgPicture.asset("assets/menu.svg"),
           iconSize: 24,
-          onPressed: () {
-            SettingsSheet.show(context);
-          },
+          onPressed: () => SettingsSheet.show(context),
         ),
         actions: <Widget>[
           IconButton(
             icon: SvgPicture.asset("assets/search.svg"),
             iconSize: 24,
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: searchDelegate,
-              );
-            },
+            onPressed: () => showSearch(
+              context: context,
+              delegate: MovieSearchDelegate(searchBloc),
+            ),
           ),
         ],
       ),
@@ -160,9 +156,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
             child: ChoiceChip(
               label: Text(item.name),
               selected: viewModel.selectedId == item.id.toString(),
-              onSelected: (selected) {
-                movieBloc.add(GetMovieListByGenreEvent("${item.id}"));
-              },
+              onSelected: (_) =>
+                  movieBloc.add(GetMovieListByGenreEvent("${item.id}")),
             ),
           );
         },
@@ -180,6 +175,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   @override
   void dispose() {
     movieBloc.close();
+    searchBloc.close();
     super.dispose();
   }
 }

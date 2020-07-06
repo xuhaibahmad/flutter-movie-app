@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
@@ -8,8 +8,7 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class MovieSearchDelegate extends SearchDelegate {
-  // TODO: Fix search bloc
-  final MovieListBloc bloc;
+  final MovieSearchBloc bloc;
 
   MovieSearchDelegate(this.bloc);
 
@@ -54,15 +53,15 @@ class MovieSearchDelegate extends SearchDelegate {
 
     return Column(
       children: <Widget>[
-        BlocBuilder<MovieListBloc, MovieListState>(
+        BlocBuilder<MovieSearchBloc, MovieSearchState>(
           builder: (context, state) {
-            if (state is MovieListLoadingState) {
+            if (state is MovieSearchLoadingState) {
               return buildProgress();
-            } else if (state is MovieListLoadedState) {
-              if (state.movieListViewModel.results.isEmpty) {
+            } else if (state is MovieSearchLoadedState) {
+              if (state.viewModel.results.isEmpty) {
                 return buildError("No Results Found.");
               } else {
-                return buildSearchResults(state.movieListViewModel);
+                return buildSearchResults(state.viewModel);
               }
             } else {
               return buildError("Error occurred while fetching results.");
