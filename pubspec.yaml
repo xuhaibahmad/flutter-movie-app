@@ -41,6 +41,7 @@ dependencies:
   percent_indicator: ^2.1.4
   webview_flutter: ^0.3.22+1
   flutter_dotenv: ^2.1.0
+  carousel_slider: ^2.2.1
 
 dev_dependencies:
   flutter_test:
