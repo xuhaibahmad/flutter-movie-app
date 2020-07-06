@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_movie_app/bloc/movie/movie_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
@@ -8,7 +8,8 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class MovieSearchDelegate extends SearchDelegate {
-  final MovieBloc bloc;
+  // TODO: Fix search bloc
+  final MovieListBloc bloc;
 
   MovieSearchDelegate(this.bloc);
 
@@ -53,7 +54,7 @@ class MovieSearchDelegate extends SearchDelegate {
 
     return Column(
       children: <Widget>[
-        BlocBuilder<MovieBloc, MovieListState>(
+        BlocBuilder<MovieListBloc, MovieListState>(
           builder: (context, state) {
             if (state is MovieListLoadingState) {
               return buildProgress();

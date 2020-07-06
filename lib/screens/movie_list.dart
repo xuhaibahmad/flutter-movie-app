@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_movie_app/bloc/movie/movie_bloc.dart';
+import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
+import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
@@ -19,19 +20,19 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => getIt<MovieBloc>(),
+        create: (context) => getIt<MovieListBloc>(),
         child: this,
       );
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
-  MovieBloc movieBloc;
+  MovieListBloc movieBloc;
   MovieSearchDelegate searchDelegate;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    movieBloc ??= BlocProvider.of<MovieBloc>(context)
+    movieBloc ??= BlocProvider.of<MovieListBloc>(context)
       ..add(GetNowPlayingMovieListEvent());
     searchDelegate = MovieSearchDelegate(movieBloc);
   }
@@ -39,43 +40,44 @@ class _MovieListScreenState extends State<MovieListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        //extendBodyBehindAppBar: true,
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: SvgPicture.asset("assets/menu.svg"),
+      resizeToAvoidBottomInset: false,
+      //extendBodyBehindAppBar: true,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: SvgPicture.asset("assets/menu.svg"),
+          iconSize: 24,
+          onPressed: () {
+            SettingsSheet.show(context);
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: SvgPicture.asset("assets/search.svg"),
             iconSize: 24,
             onPressed: () {
-              SettingsSheet.show(context);
+              showSearch(
+                context: context,
+                delegate: searchDelegate,
+              );
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: SvgPicture.asset("assets/search.svg"),
-              iconSize: 24,
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: searchDelegate,
-                );
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<MovieBloc, MovieListState>(
-          builder: (context, state) {
-            if (state is MovieListLoadingState) {
-              return buildLoading();
-            } else if (state is MovieListErrorState) {
-              return buildError();
-            } else {
-              return buildMovieList(state);
-            }
-          },
-        ));
+        ],
+      ),
+      body: BlocBuilder<MovieListBloc, MovieListState>(
+        builder: (_, state) {
+          if (state is MovieListLoadedState) {
+            return buildMovieList(state);
+          } else if (state is MovieListErrorState) {
+            return buildError();
+          } else {
+            return buildLoading();
+          }
+        },
+      ),
+    );
   }
 
   Widget buildLoading() => ProgressView();
@@ -104,9 +106,12 @@ class _MovieListScreenState extends State<MovieListScreen> {
           itemCount: viewModel.results.length,
           itemBuilder: (BuildContext context, int index) {
             final movieItem = viewModel.results[index];
-            return Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(movieItem.title),
+            return InkWell(
+              onTap: () => openDetails("${movieItem.id}"),
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(movieItem.title),
+              ),
             );
           },
         ),
@@ -162,6 +167,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
           );
         },
       ),
+    );
+  }
+
+  openDetails(String movieId) {
+    ExtendedNavigator.of(context).pushNamed(
+      Routes.movieDetailsPage,
+      arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
   }
 

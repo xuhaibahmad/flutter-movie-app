@@ -1,4 +1,4 @@
-part of 'movie_bloc.dart';
+part of 'movie_list_bloc.dart';
 
 @immutable
 abstract class MovieListState {}

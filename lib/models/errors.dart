@@ -7,3 +7,7 @@ abstract class MovieError {
 class MovieListError extends MovieError {
   MovieListError(Error error) : super(error);
 }
+
+class MovieDetailsError extends MovieError {
+  MovieDetailsError(Error error) : super(error);
+}

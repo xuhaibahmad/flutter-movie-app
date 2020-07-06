@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_response.dart';
+import 'package:flutter_movie_app/models/api_responses/movie_details/movie_details_response.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/errors.dart';
 import 'package:injectable/injectable.dart';
@@ -16,6 +17,7 @@ class MovieRepository {
   final MovieApi api;
 
   final movieListMemCache = HashMap<String, MovieListResponse>();
+  final movieDetailsMemCache = HashMap<String, MovieDetailsResponse>();
   final genreListMemCache = HashMap<String, GenreListResponse>();
 
   final today = DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now());
@@ -105,6 +107,18 @@ class MovieRepository {
       final response = await api.getGenres();
       final result = response.body;
       genreListMemCache[today] = result;
+      return result;
+    } on Error catch (e) {
+      print(e.stackTrace);
+      return Future.error(MovieListError(e));
+    }
+  }
+
+  Future<MovieDetailsResponse> getMovieDetails(String movieId) async {
+    try {
+      final response = await api.getMovie(movieId);
+      final result = response.body;
+      movieDetailsMemCache[movieId] = result;
       return result;
     } on Error catch (e) {
       print(e.stackTrace);

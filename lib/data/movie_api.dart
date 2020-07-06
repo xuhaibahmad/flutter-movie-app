@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_response.dart';
+import 'package:flutter_movie_app/models/api_responses/movie_details/movie_details_response.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/utils/api_key_interceptor.dart';
 import 'package:flutter_movie_app/utils/chopper_json_converter.dart';
@@ -25,6 +26,11 @@ abstract class MovieApi extends ChopperService {
   @Get(path: "/movie/popular")
   Future<Response<MovieListResponse>> getPopular();
 
+  @Get(path: "/movie/{movie_id}")
+  Future<Response<MovieDetailsResponse>> getMovie(
+    @Path("movie_id") String movieId,
+  );
+
   @Get(path: "/search/movie")
   Future<Response<MovieListResponse>> search(
     @Query("query") String query,
@@ -45,6 +51,7 @@ abstract class MovieApi extends ChopperService {
       services: [_$MovieApi()],
       converter: JsonToTypeConverter({
         MovieListResponse: (json) => MovieListResponse.fromJson(json),
+        MovieDetailsResponse: (json) => MovieDetailsResponse.fromJson(json),
         GenreListResponse: (json) => GenreListResponse.fromJson(json),
       }),
       interceptors: [

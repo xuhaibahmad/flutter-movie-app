@@ -9,18 +9,18 @@ import 'package:flutter_movie_app/utils/mixins/auto_reset_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 
-part 'movie_event.dart';
-part 'movie_state.dart';
+part 'movie_list_event.dart';
+part 'movie_list_state.dart';
 
 const EMPTY_STRING = "";
 
 @preResolve
-@singleton
-class MovieBloc extends Bloc<MovieListEvent, MovieListState>
+@lazySingleton
+class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     with AutoResetLazySingleton<MovieListEvent, MovieListState> {
   final MovieRepository repository;
 
-  MovieBloc({this.repository}) : super(MovieListInitialState());
+  MovieListBloc({this.repository}) : super(MovieListInitialState());
 
   @override
   Stream<MovieListState> mapEventToState(
