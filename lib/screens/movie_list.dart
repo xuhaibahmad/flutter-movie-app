@@ -8,10 +8,17 @@ import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmo
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
+import 'package:flutter_movie_app/utils/hex_color_ext.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:flutter_svg/svg.dart';
+
+const TABS = [
+  "In Theater",
+  "Trending",
+  "Coming Soon",
+];
 
 class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
   const MovieListScreen({Key key}) : super(key: key);
@@ -29,6 +36,8 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 class _MovieListScreenState extends State<MovieListScreen> {
   MovieListBloc movieBloc;
   MovieSearchBloc searchBloc;
+
+  int _selectedTabIndex = 0;
 
   @override
   void didChangeDependencies() {
@@ -117,27 +126,48 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
   Widget buildTabs() {
     return SizedBox(
-      height: 40,
-      child: Container(
-        child: ListView(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            FlatButton(
-              child: Text("In Theater"),
-              onPressed: () => movieBloc.add(GetNowPlayingMovieListEvent()),
-            ),
-            FlatButton(
-              child: Text("Trending"),
-              onPressed: () => movieBloc.add(GetTrendingMovieListEvent()),
-            ),
-            FlatButton(
-              child: Text("Coming Soon"),
-              onPressed: () => movieBloc.add(GetUpcomingMovieListEvent()),
-            ),
-          ],
-        ),
+      height: 60,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        shrinkWrap: true,
+        itemCount: TABS.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = TABS[index];
+          final selected = _selectedTabIndex == index;
+          return buildTabListItem(item, selected, index);
+        },
       ),
+    );
+  }
+
+  Column buildTabListItem(String item, bool selected, int index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        FlatButton(
+          child: Text(
+            item,
+            style: TextStyle(
+              fontFamily: "Proxima Nova",
+              fontSize: 24,
+              color: HexColor.fromHex("12153D").withOpacity(selected ? 1 : 0.3),
+            ),
+          ),
+          onPressed: () => onTabSelected(index),
+        ),
+        Visibility(
+          visible: selected,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: SizedBox(
+              height: 3,
+              width: 20,
+              child: Container(color: Colors.pink),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -170,6 +200,19 @@ class _MovieListScreenState extends State<MovieListScreen> {
       Routes.movieDetailsPage,
       arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
+  }
+
+  onTabSelected(int index) {
+    setState(() {
+      _selectedTabIndex = index;
+      if (_selectedTabIndex == 0) {
+        movieBloc.add(GetNowPlayingMovieListEvent());
+      } else if (_selectedTabIndex == 1) {
+        movieBloc.add(GetTrendingMovieListEvent());
+      } else {
+        movieBloc.add(GetUpcomingMovieListEvent());
+      }
+    });
   }
 
   @override
