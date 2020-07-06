@@ -79,6 +79,7 @@ flutter:
     - family: Proxima Nova
       fonts:
         - asset: fonts/Proxima_Nova_Semi_Bold.otf
+        - asset: fonts/Proxima_Nova_Medium.otf
     # - family: Trajan Pro
     #   fonts:
     #     - asset: fonts/TrajanPro.ttf

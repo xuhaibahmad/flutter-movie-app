@@ -38,6 +38,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   MovieSearchBloc searchBloc;
 
   int _selectedTabIndex = 0;
+  int _selectedCategoryIndex;
 
   @override
   void didChangeDependencies() {
@@ -141,7 +142,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     );
   }
 
-  Column buildTabListItem(String item, bool selected, int index) {
+  Widget buildTabListItem(String item, bool selected, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -150,6 +151,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
             item,
             style: TextStyle(
               fontFamily: "Proxima Nova",
+              fontWeight: FontWeight.w600,
               fontSize: 24,
               color: HexColor.fromHex("12153D").withOpacity(selected ? 1 : 0.3),
             ),
@@ -161,9 +163,14 @@ class _MovieListScreenState extends State<MovieListScreen> {
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: SizedBox(
-              height: 3,
-              width: 20,
-              child: Container(color: Colors.pink),
+              height: 4,
+              width: 28,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: HexColor.fromHex("FE6D8E"),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
             ),
           ),
         ),
@@ -181,13 +188,35 @@ class _MovieListScreenState extends State<MovieListScreen> {
         itemCount: viewModel.items.length,
         itemBuilder: (BuildContext context, int index) {
           final item = viewModel.items[index];
+          final selected = _selectedCategoryIndex == index;
           return Container(
             padding: EdgeInsets.all(8),
             child: ChoiceChip(
-              label: Text(item.name),
+              backgroundColor: Colors.transparent,
+              selectedColor: HexColor.fromHex("FE6D8E"),
+              label: Text(
+                item.name,
+                style: TextStyle(
+                  fontFamily: "Proxima Nova",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                  color: selected ? Colors.white : HexColor.fromHex("434670"),
+                ),
+              ),
+              shape: StadiumBorder(
+                side: BorderSide(
+                  color: selected
+                      ? Colors.white
+                      : HexColor.fromHex("12153D").withOpacity(.15),
+                  width: .8,
+                ),
+              ),
               selected: viewModel.selectedId == item.id.toString(),
-              onSelected: (_) =>
-                  movieBloc.add(GetMovieListByGenreEvent("${item.id}")),
+              onSelected: (_) {
+                _selectedCategoryIndex = index;
+                _selectedTabIndex = null;
+                movieBloc.add(GetMovieListByGenreEvent("${item.id}"));
+              },
             ),
           );
         },
@@ -205,6 +234,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   onTabSelected(int index) {
     setState(() {
       _selectedTabIndex = index;
+      _selectedCategoryIndex = null;
       if (_selectedTabIndex == 0) {
         movieBloc.add(GetNowPlayingMovieListEvent());
       } else if (_selectedTabIndex == 1) {
