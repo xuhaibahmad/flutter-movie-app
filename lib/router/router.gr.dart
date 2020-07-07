@@ -73,6 +73,6 @@ class MovieListScreenArguments {
 //MovieDetailsScreen arguments holder class
 class MovieDetailsScreenArguments {
   final Key key;
-  final String movieId;
+  final int movieId;
   MovieDetailsScreenArguments({this.key, @required this.movieId});
 }

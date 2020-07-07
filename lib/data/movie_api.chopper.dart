@@ -38,7 +38,7 @@ class _$MovieApi extends MovieApi {
   }
 
   @override
-  Future<Response<MovieDetailsResponse>> getMovie(String movieId) {
+  Future<Response<MovieDetailsResponse>> getMovie(int movieId) {
     final $url = 'https://api.themoviedb.org/3/movie/$movieId';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<MovieDetailsResponse, MovieDetailsResponse>($request);

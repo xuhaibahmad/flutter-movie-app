@@ -8,7 +8,7 @@ import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MovieDetailsScreen extends StatefulWidget implements AutoRouteWrapper {
-  final String movieId;
+  final int movieId;
 
   const MovieDetailsScreen({
     Key key,
@@ -26,7 +26,7 @@ class MovieDetailsScreen extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  final String movieId;
+  final int movieId;
   MovieDetailsBloc bloc;
 
   _MovieDetailsScreenState(this.movieId);

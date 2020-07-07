@@ -17,7 +17,7 @@ class MovieRepository {
   final MovieApi api;
 
   final movieListMemCache = HashMap<String, MovieListResponse>();
-  final movieDetailsMemCache = HashMap<String, MovieDetailsResponse>();
+  final movieDetailsMemCache = HashMap<int, MovieDetailsResponse>();
   final genreListMemCache = HashMap<String, GenreListResponse>();
 
   final today = DateFormat(DateFormat.ABBR_MONTH_DAY).format(DateTime.now());
@@ -114,8 +114,11 @@ class MovieRepository {
     }
   }
 
-  Future<MovieDetailsResponse> getMovieDetails(String movieId) async {
+  Future<MovieDetailsResponse> getMovieDetails(int movieId) async {
     try {
+      if (movieDetailsMemCache.containsKey(movieId)) {
+        return movieDetailsMemCache[movieId];
+      }
       final response = await api.getMovie(movieId);
       final result = response.body;
       movieDetailsMemCache[movieId] = result;

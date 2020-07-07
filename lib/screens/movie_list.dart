@@ -133,33 +133,50 @@ class _MovieListScreenState extends State<MovieListScreen> {
   }
 
   Widget buildMovieListItem(Item movie, double rotation, bool isOffsetItem) {
-    return InkWell(
-      onTap: () => openDetails("${movie.id}"),
+    return GestureDetector(
+      onTap: () => openDetails(movie.id),
       child: RotationTransition(
         turns: AlwaysStoppedAnimation(rotation),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 24),
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50.0),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    Colors.white.withOpacity(isOffsetItem ? 0.3 : 0),
-                    BlendMode.srcOver,
+            Stack(
+              children: <Widget>[
+                Card(
+                  margin: EdgeInsets.symmetric(horizontal: 24),
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
                   ),
-                  child: Image(
-                    fit: BoxFit.fill,
-                    image: NetworkImage("$IMAGE_BASE_URL${movie.posterPath}"),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        Colors.white.withOpacity(isOffsetItem ? 0.3 : 0),
+                        BlendMode.srcOver,
+                      ),
+                      child: Image(
+                        fit: BoxFit.fill,
+                        image:
+                            NetworkImage("$IMAGE_BASE_URL${movie.posterPath}"),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Positioned.fill(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => openDetails(movie.id),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             SizedBox(
@@ -311,7 +328,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     );
   }
 
-  openDetails(String movieId) {
+  openDetails(int movieId) {
     ExtendedNavigator.of(context).pushNamed(
       Routes.movieDetailsPage,
       arguments: MovieDetailsScreenArguments(movieId: movieId),
