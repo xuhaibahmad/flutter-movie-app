@@ -6,6 +6,8 @@ import 'package:flutter_movie_app/bloc/movie_details/movie_details_bloc.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_details/movie_details_response.dart';
+import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
+import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
@@ -98,10 +100,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 buildBanner(movie),
                 SizedBox(height: 100),
                 buildContent(movie),
+                SizedBox(height: 12),
+                buildSimilarMoviesList(state.viewModel.similarMovies),
+                SizedBox(height: 12),
               ],
             ),
           ),
@@ -165,11 +171,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           ),
           SizedBox(height: 8),
           buildGenres(movie.genres),
-          SizedBox(height: 16),
+          SizedBox(height: 20),
           Text("Plot Summary", style: theme.headline1),
           SizedBox(height: 12),
           Text(movie.overview, style: theme.caption),
-          // TODO: Add similar movies
+          SizedBox(height: 20),
+          Text("Similar Movies", style: theme.headline1),
         ],
       ),
     );
@@ -285,6 +292,116 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  buildSimilarMoviesList(MovieListResponse similarMovies) {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: similarMovies.results.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = similarMovies.results[index];
+          return Container(
+            padding: EdgeInsets.all(8),
+            child: buildSimilarMovieItem(item),
+          );
+        },
+      ),
+    );
+  }
+
+  buildSimilarMovieItem(Item movie) {
+    return Container(
+      width: 150,
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 24),
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: movie.posterPath?.isNotEmpty ?? false
+                      ? Image(
+                          fit: BoxFit.fill,
+                          image: NetworkImage(
+                            "$IMAGE_BASE_URL${movie.posterPath}",
+                          ),
+                        )
+                      : Container(
+                          width: 150,
+                          height: 200,
+                          child: Icon(
+                            FlutterIcons.theater_masks_faw5s,
+                            color: Colors.black12,
+                            size: 150,
+                          ),
+                        ),
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Material(
+                    color: theme.transparent,
+                    child: InkWell(
+                      onTap: () => openDetails(movie.id),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          SizedBox(
+            width: 200,
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                movie.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.headline1,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                FlutterIcons.star_ant,
+                size: 16,
+                color: theme.amber,
+              ),
+              SizedBox(width: 8),
+              Text(
+                "${movie.voteAverage}",
+                style: theme.caption,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  openDetails(int movieId) {
+    ExtendedNavigator.of(context).pushNamed(
+      Routes.movieDetailsPage,
+      arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
   }
 

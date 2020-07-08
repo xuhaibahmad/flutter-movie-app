@@ -2,19 +2,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
-import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/di/injection.dart';
-import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
-import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
+import 'package:flutter_movie_app/views/movie_list_item_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -135,103 +132,11 @@ class _MovieListScreenState extends State<MovieListScreen> {
             },
           ),
           itemCount: viewModel.results.length,
-          itemBuilder: (_, index) => buildMovieListItem(
-            viewModel.results[index],
-            calculateRotationAngle(index, viewModel.results.length),
-            _visibleListIndex != index,
+          itemBuilder: (_, index) => MovieListItemView(
+            movie: viewModel.results[index],
+            rotation: calculateRotationAngle(index, viewModel.results.length),
+            isOffsetItem: _visibleListIndex != index,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildMovieListItem(Item movie, double rotation, bool isOffsetItem) {
-    return GestureDetector(
-      onTap: () => openDetails(movie.id),
-      child: RotationTransition(
-        turns: AlwaysStoppedAnimation(rotation),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Card(
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        isOffsetItem ? theme.offsetItemTint : theme.transparent,
-                        BlendMode.srcOver,
-                      ),
-                      child: movie.posterPath?.isNotEmpty ?? false
-                          ? Image(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(
-                                "$IMAGE_BASE_URL${movie.posterPath}",
-                              ),
-                            )
-                          : Container(
-                              width: 300,
-                              height: 400,
-                              child: Icon(
-                                FlutterIcons.theater_masks_faw5s,
-                                color: Colors.black12,
-                                size: 150,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Material(
-                      color: theme.transparent,
-                      child: InkWell(
-                        onTap: () => openDetails(movie.id),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            SizedBox(
-              width: 200,
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  movie.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.headline6,
-                ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  FlutterIcons.star_ant,
-                  size: 16,
-                  color: theme.amber,
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "${movie.voteAverage}",
-                  style: theme.caption,
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
@@ -331,13 +236,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
           },
         ),
       ),
-    );
-  }
-
-  openDetails(int movieId) {
-    ExtendedNavigator.of(context).pushNamed(
-      Routes.movieDetailsPage,
-      arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
   }
 

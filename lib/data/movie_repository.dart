@@ -128,4 +128,19 @@ class MovieRepository {
       return Future.error(MovieListError(e));
     }
   }
+
+  Future<MovieListResponse> getSimilarMovies(int movieId) async {
+    try {
+      if (movieListMemCache.containsKey(movieId.toString())) {
+        return movieListMemCache[movieId.toString()];
+      }
+      final response = await api.getSimilarMovies(movieId);
+      final result = response.body;
+      movieListMemCache[movieId.toString()] = result;
+      return result;
+    } on Error catch (e) {
+      print(e.stackTrace);
+      return Future.error(MovieListError(e));
+    }
+  }
 }

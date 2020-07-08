@@ -26,8 +26,12 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState>
     if (event is GetMovieDetailsEvent) {
       yield MovieDetailsLoadingState();
       try {
-        final response = await repository.getMovieDetails(event.movieId);
-        final movie = MovieDetailsViewModel.fromMovieDetailsResponse(response);
+        final detailsResponse = await repository.getMovieDetails(event.movieId);
+        final likesResponse = await repository.getSimilarMovies(event.movieId);
+        final movie = MovieDetailsViewModel.fromMovieDetailsResponse(
+          detailsResponse,
+          likesResponse,
+        );
         yield MovieDetailsLoadedState(movie);
       } on MovieDetailsError catch (e) {
         yield MovieDetailsErrorState(e);

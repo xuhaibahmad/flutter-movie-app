@@ -32,6 +32,11 @@ abstract class MovieApi extends ChopperService {
     @Path("movie_id") int movieId,
   );
 
+  @Get(path: "/movie/{movie_id}/similar")
+  Future<Response<MovieListResponse>> getSimilarMovies(
+    @Path("movie_id") int movieId,
+  );
+
   @Get(path: "/search/movie")
   Future<Response<MovieListResponse>> search(
     @Query("query") String query,

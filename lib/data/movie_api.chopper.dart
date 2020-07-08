@@ -45,6 +45,13 @@ class _$MovieApi extends MovieApi {
   }
 
   @override
+  Future<Response<MovieListResponse>> getSimilarMovies(int movieId) {
+    final $url = 'https://api.themoviedb.org/3/movie/$movieId/similar';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<MovieListResponse, MovieListResponse>($request);
+  }
+
+  @override
   Future<Response<MovieListResponse>> search(String query) {
     final $url = 'https://api.themoviedb.org/3/search/movie';
     final $params = <String, dynamic>{'query': query};
