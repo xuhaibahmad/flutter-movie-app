@@ -1,9 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
+import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -99,28 +102,48 @@ class MovieSearchDelegate extends SearchDelegate {
           itemCount: results.length,
           itemBuilder: (context, index) {
             var result = results[index];
-            return buildSearchListItem(result);
+            return buildSearchListItem(context, result);
           },
         ),
       ),
     );
   }
 
-  Widget buildSearchListItem(Item result) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      child: ListTile(
-        title: Text(result.title),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(4.0),
-          child: Image(
-            width: 40,
-            height: 60,
-            fit: BoxFit.fill,
-            image: NetworkImage("$IMAGE_BASE_URL${result.posterPath}"),
+  Widget buildSearchListItem(BuildContext context, Item result) {
+    return InkWell(
+      onTap: () => openDetails(context, result.id),
+      child: Container(
+        padding: EdgeInsets.all(4),
+        child: ListTile(
+          title: Text(result.title),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(4.0),
+            child: result.posterPath?.isNotEmpty ?? false
+                ? Image(
+                    width: 40,
+                    height: 60,
+                    fit: BoxFit.fill,
+                    image: NetworkImage("$IMAGE_BASE_URL${result.posterPath}"),
+                  )
+                : Container(
+                    width: 40,
+                    height: 60,
+                    child: Icon(
+                      FlutterIcons.theater_masks_faw5s,
+                      color: Colors.black12,
+                      size: 32,
+                    ),
+                  ),
           ),
         ),
       ),
+    );
+  }
+
+  openDetails(BuildContext context, int movieId) {
+    ExtendedNavigator.of(context).pushNamed(
+      Routes.movieDetailsPage,
+      arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
   }
 
