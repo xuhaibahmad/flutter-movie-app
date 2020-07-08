@@ -115,6 +115,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             height: 80,
             margin: EdgeInsets.only(top: 210, left: 40),
             child: Card(
+              color: theme.darkMode ? Colors.black : Colors.white,
+              shadowColor: theme.textColorDark,
               margin: EdgeInsets.all(0),
               elevation: 8,
               shape: RoundedRectangleBorder(
@@ -281,14 +283,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(
-              "${movie.voteAverage}",
-              style: theme.caption,
-            ),
-            Text(
-              "/10",
-              style: theme.bodyText1,
-            ),
+            Text("${movie.voteAverage}", style: theme.caption),
+            SizedBox(width: 2),
+            Text("/", style: theme.bodyText1),
+            SizedBox(width: 2),
+            Text("10", style: theme.bodyText1),
           ],
         ),
       ],
