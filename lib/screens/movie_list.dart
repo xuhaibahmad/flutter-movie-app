@@ -169,11 +169,22 @@ class _MovieListScreenState extends State<MovieListScreen> {
                         isOffsetItem ? theme.offsetItemTint : theme.transparent,
                         BlendMode.srcOver,
                       ),
-                      child: Image(
-                        fit: BoxFit.fill,
-                        image:
-                            NetworkImage("$IMAGE_BASE_URL${movie.posterPath}"),
-                      ),
+                      child: movie.posterPath?.isNotEmpty ?? false
+                          ? Image(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(
+                                "$IMAGE_BASE_URL${movie.posterPath}",
+                              ),
+                            )
+                          : Container(
+                              width: 300,
+                              height: 400,
+                              child: Icon(
+                                FlutterIcons.theater_masks_faw5s,
+                                color: Colors.black12,
+                                size: 150,
+                              ),
+                            ),
                     ),
                   ),
                 ),
