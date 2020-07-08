@@ -47,6 +47,7 @@ class AppTheme {
         caption: caption,
         headline1: headline1,
         bodyText1: bodyText1,
+        bodyText2: bodyText2,
       );
 
   TextStyle get headline6 => TextStyle(
@@ -70,5 +71,11 @@ class AppTheme {
   TextStyle get bodyText1 => TextStyle(
         fontWeight: FontWeight.w500,
         fontSize: 12,
+      );
+
+  TextStyle get bodyText2 => TextStyle(
+        fontWeight: FontWeight.w500,
+        fontSize: 20,
+        color: textColorDark,
       );
 }

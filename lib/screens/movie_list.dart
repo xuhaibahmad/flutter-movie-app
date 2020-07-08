@@ -28,8 +28,10 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
   const MovieListScreen({Key key}) : super(key: key);
 
   @override
-  _MovieListScreenState createState() =>
-      _MovieListScreenState(getIt<AppTheme>());
+  _MovieListScreenState createState() => _MovieListScreenState(
+        sheet: getIt<SettingsSheet>(),
+        theme: getIt<AppTheme>(),
+      );
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider<MovieListBloc>(
@@ -39,6 +41,7 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
+  final SettingsSheet sheet;
   final AppTheme theme;
 
   MovieListBloc movieBloc;
@@ -48,7 +51,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   int _selectedTabIndex = 0;
   int _selectedCategoryIndex;
 
-  _MovieListScreenState(this.theme);
+  _MovieListScreenState({this.sheet, this.theme});
 
   @override
   void didChangeDependencies() {
@@ -71,7 +74,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
             color: theme.textColorDark,
           ),
           iconSize: 24,
-          onPressed: () => SettingsSheet.show(context),
+          onPressed: () => sheet.show(context),
         ),
         actions: <Widget>[
           IconButton(

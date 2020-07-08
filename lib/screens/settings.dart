@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
+import 'package:flutter_movie_app/di/injection.dart';
+import 'package:flutter_movie_app/styling.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class SettingsSheet {
-  static show(BuildContext context) {
+  final AppTheme theme;
+
+  SettingsSheet(this.theme);
+
+  show(BuildContext context) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25.0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
       context: context,
       isScrollControlled: true,
@@ -24,24 +30,22 @@ class SettingsSheet {
     );
   }
 
-  static List<Widget> buildSheetItems(BuildContext context) {
+  List<Widget> buildSheetItems(BuildContext context) {
     return [
       Row(
         children: <Widget>[
           Expanded(
             child: Text(
               "Preferences",
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.black45,
-                fontWeight: FontWeight.w500,
-              ),
+              style: theme.bodyText2,
             ),
           ),
           IconButton(
-            icon: Icon(FlutterIcons.cross_ent),
+            icon: Icon(
+              FlutterIcons.cross_ent,
+              color: theme.textColor,
+            ),
             iconSize: 24,
-            color: Colors.black45,
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -56,11 +60,14 @@ class PrefContents extends StatefulWidget {
   const PrefContents({Key key}) : super(key: key);
 
   @override
-  _PrefContentsState createState() => _PrefContentsState();
+  _PrefContentsState createState() => _PrefContentsState(getIt<AppTheme>());
 }
 
 class _PrefContentsState extends State<PrefContents> {
+  final AppTheme theme;
   AppBloc bloc;
+
+  _PrefContentsState(this.theme);
 
   @override
   void didChangeDependencies() {
@@ -102,7 +109,11 @@ class _PrefContentsState extends State<PrefContents> {
   ) {
     return SwitchListTile(
       title: Text(label),
-      secondary: Icon(icon),
+      secondary: Icon(
+        icon,
+        color: theme.textColor,
+      ),
+      activeColor: theme.pink,
       value: defaultValue,
       onChanged: onChanged,
     );

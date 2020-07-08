@@ -15,6 +15,7 @@ import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/bloc/movie_details/movie_details_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
+import 'package:flutter_movie_app/screens/settings.dart';
 import 'package:get_it/get_it.dart';
 
 Future<void> $initGetIt(GetIt g, {String environment}) async {
@@ -27,6 +28,7 @@ Future<void> $initGetIt(GetIt g, {String environment}) async {
       () => MovieDetailsBloc(repository: g<MovieRepository>()));
   g.registerLazySingleton<MovieListBloc>(
       () => MovieListBloc(repository: g<MovieRepository>()));
+  g.registerFactory<SettingsSheet>(() => SettingsSheet(g<AppTheme>()));
 
   //Eager singletons must be registered in the right order
   final appRepository = await AppRepository.create();
