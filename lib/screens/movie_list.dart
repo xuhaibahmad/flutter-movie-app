@@ -264,7 +264,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
         FlatButton(
           child: Text(
             item,
-            style: theme.headline1.copyWith(
+            style: theme.headline6.copyWith(
               color: selected ? theme.textColorDark : theme.textColor30,
             ),
           ),

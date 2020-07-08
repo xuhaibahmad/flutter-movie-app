@@ -64,7 +64,7 @@ class AppTheme {
 
   TextStyle get headline1 => TextStyle(
         fontWeight: FontWeight.w600,
-        fontSize: 24,
+        fontSize: 20,
         color: textColorDark,
       );
 
