@@ -12,7 +12,7 @@ import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmo
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
-import 'package:flutter_movie_app/utils/hex_color_ext.dart';
+import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
@@ -28,7 +28,8 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
   const MovieListScreen({Key key}) : super(key: key);
 
   @override
-  _MovieListScreenState createState() => _MovieListScreenState();
+  _MovieListScreenState createState() =>
+      _MovieListScreenState(getIt<AppTheme>());
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider<MovieListBloc>(
@@ -38,12 +39,16 @@ class MovieListScreen extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _MovieListScreenState extends State<MovieListScreen> {
+  final AppTheme theme;
+
   MovieListBloc movieBloc;
   MovieSearchBloc searchBloc;
 
   int _visibleListIndex = 0;
   int _selectedTabIndex = 0;
   int _selectedCategoryIndex;
+
+  _MovieListScreenState(this.theme);
 
   @override
   void didChangeDependencies() {
@@ -57,18 +62,23 @@ class _MovieListScreenState extends State<MovieListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: theme.transparent,
         elevation: 0.0,
         leading: IconButton(
-          icon: SvgPicture.asset("assets/menu.svg"),
+          icon: SvgPicture.asset(
+            "assets/menu.svg",
+            color: theme.textColorDark,
+          ),
           iconSize: 24,
           onPressed: () => SettingsSheet.show(context),
         ),
         actions: <Widget>[
           IconButton(
-            icon: SvgPicture.asset("assets/search.svg"),
+            icon: SvgPicture.asset(
+              "assets/search.svg",
+              color: theme.textColorDark,
+            ),
             iconSize: 24,
             onPressed: () => showSearch(
               context: context,
@@ -153,7 +163,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
                     borderRadius: BorderRadius.circular(50),
                     child: ColorFiltered(
                       colorFilter: ColorFilter.mode(
-                        Colors.white.withOpacity(isOffsetItem ? 0.3 : 0),
+                        isOffsetItem ? theme.offsetItemTint : theme.transparent,
                         BlendMode.srcOver,
                       ),
                       child: Image(
@@ -168,7 +178,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Material(
-                      color: Colors.transparent,
+                      color: theme.transparent,
                       child: InkWell(
                         onTap: () => openDetails(movie.id),
                         borderRadius: BorderRadius.circular(50),
@@ -187,12 +197,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
                   movie.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: "Proxima Nova",
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
-                    color: HexColor.fromHex("12153D"),
-                  ),
+                  style: theme.headline6,
                 ),
               ),
             ),
@@ -203,17 +208,12 @@ class _MovieListScreenState extends State<MovieListScreen> {
                 Icon(
                   FlutterIcons.star_ant,
                   size: 16,
-                  color: Colors.amber,
+                  color: theme.amber,
                 ),
                 SizedBox(width: 8),
                 Text(
                   "${movie.voteAverage}",
-                  style: TextStyle(
-                    fontFamily: "Proxima Nova",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: HexColor.fromHex("434670"),
-                  ),
+                  style: theme.caption,
                 ),
               ],
             ),
@@ -250,11 +250,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
         FlatButton(
           child: Text(
             item,
-            style: TextStyle(
-              fontFamily: "Proxima Nova",
-              fontWeight: FontWeight.w600,
-              fontSize: 24,
-              color: HexColor.fromHex("12153D").withOpacity(selected ? 1 : 0.3),
+            style: theme.headline1.copyWith(
+              color: selected ? theme.textColorDark : theme.textColor30,
             ),
           ),
           onPressed: () => onTabSelected(index),
@@ -268,7 +265,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
               width: 28,
               child: Container(
                 decoration: BoxDecoration(
-                  color: HexColor.fromHex("FE6D8E"),
+                  color: theme.pink,
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
@@ -295,22 +292,17 @@ class _MovieListScreenState extends State<MovieListScreen> {
             return Container(
               padding: EdgeInsets.all(8),
               child: ChoiceChip(
-                backgroundColor: Colors.transparent,
-                selectedColor: HexColor.fromHex("FE6D8E"),
-                label: Text(
-                  item.name,
-                  style: TextStyle(
-                    fontFamily: "Proxima Nova",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    color: selected ? Colors.white : HexColor.fromHex("434670"),
-                  ),
-                ),
+                backgroundColor: theme.transparent,
+                selectedColor: theme.pink,
+                label: Text(item.name,
+                    style: theme.bodyText1.copyWith(
+                      color: selected
+                          ? theme.backgroundLightColor
+                          : theme.textColorDark,
+                    )),
                 shape: StadiumBorder(
                   side: BorderSide(
-                    color: selected
-                        ? Colors.white
-                        : HexColor.fromHex("12153D").withOpacity(.15),
+                    color: selected ? theme.transparent : theme.textColorLight,
                     width: .8,
                   ),
                 ),
