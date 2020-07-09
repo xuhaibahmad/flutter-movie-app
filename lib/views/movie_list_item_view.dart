@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/styling.dart';
+import 'package:flutter_movie_app/views/movie_poster_view.dart';
 
 class MovieListItemView extends StatelessWidget {
   final Function(int movieId) onItemClick;
@@ -75,30 +75,12 @@ class MovieListItemView extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50.0),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                isOffsetItem ? theme.offsetItemTint : theme.transparent,
-                BlendMode.srcOver,
-              ),
-              child: movie.posterPath?.isNotEmpty ?? false
-                  ? Image(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(
-                        "$IMAGE_BASE_URL${movie.posterPath}",
-                      ),
-                    )
-                  : Container(
-                      width: 300,
-                      height: 400,
-                      child: Icon(
-                        FlutterIcons.theater_masks_faw5s,
-                        color: theme.darkMode ? Colors.white12 : Colors.black12,
-                        size: 150,
-                      ),
-                    ),
-            ),
+          child: MoviePosterView(
+            posterPath: movie.posterPath,
+            icon: FlutterIcons.theater_masks_faw5s,
+            cornerRadius: 50,
+            width: 300,
+            height: 400,
           ),
         ),
         Positioned.fill(

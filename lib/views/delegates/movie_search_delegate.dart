@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
-import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/styling.dart';
+import 'package:flutter_movie_app/views/movie_poster_view.dart';
+import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -25,9 +26,7 @@ class MovieSearchDelegate extends SearchDelegate {
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
+        onPressed: () => query = '',
       ),
     ];
   }
@@ -36,9 +35,7 @@ class MovieSearchDelegate extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
+      onPressed: () => close(context, null),
     );
   }
 
@@ -46,55 +43,43 @@ class MovieSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     if (query.length < 3) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: Text(
-              "Search term must be longer than two letters.",
-            ),
-          )
-        ],
+        children: [buildError("Search term must be longer than two letters.")],
       );
     }
 
     bloc.add(SearchMoviesEvent(query));
 
-    return Column(
-      children: <Widget>[
-        BlocBuilder<MovieSearchBloc, MovieSearchState>(
-          builder: (context, state) {
-            if (state is MovieSearchLoadingState) {
-              return buildProgress();
-            } else if (state is MovieSearchLoadedState) {
-              if (state.viewModel.results.isEmpty) {
-                return buildError("No Results Found.");
-              } else {
-                return buildSearchResults(state.viewModel);
-              }
+    return Column(children: <Widget>[
+      BlocBuilder<MovieSearchBloc, MovieSearchState>(
+        builder: (context, state) {
+          if (state is MovieSearchLoadingState) {
+            return buildProgress();
+          } else if (state is MovieSearchLoadedState) {
+            if (state.viewModel.results.isEmpty) {
+              return buildError("No Results Found.");
             } else {
-              return buildError("Error occurred while fetching results.");
+              return buildSearchResults(state.viewModel);
             }
-          },
-        ),
-      ],
-    );
+          } else {
+            return buildError("Error occurred while fetching results.");
+          }
+        },
+      ),
+    ]);
   }
 
   Widget buildProgress() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Center(child: CircularProgressIndicator()),
-      ],
-    );
+    return Center(child: ProgressView(darkMode: theme.darkMode));
   }
 
   Widget buildError(String message) {
-    return Column(
-      children: <Widget>[
-        Text(message),
-      ],
+    return Center(
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
@@ -106,8 +91,7 @@ class MovieSearchDelegate extends SearchDelegate {
         child: ListView.builder(
           itemCount: results.length,
           itemBuilder: (context, index) {
-            var result = results[index];
-            return buildSearchListItem(context, result);
+            return buildSearchListItem(context, results[index]);
           },
         ),
       ),
@@ -121,24 +105,9 @@ class MovieSearchDelegate extends SearchDelegate {
         padding: EdgeInsets.all(4),
         child: ListTile(
           title: Text(result.title),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(4.0),
-            child: result.posterPath?.isNotEmpty ?? false
-                ? Image(
-                    width: 40,
-                    height: 60,
-                    fit: BoxFit.fill,
-                    image: NetworkImage("$IMAGE_BASE_URL${result.posterPath}"),
-                  )
-                : Container(
-                    width: 40,
-                    height: 60,
-                    child: Icon(
-                      FlutterIcons.theater_masks_faw5s,
-                      color: Colors.black12,
-                      size: 32,
-                    ),
-                  ),
+          leading: MoviePosterView(
+            posterPath: result.posterPath,
+            icon: FlutterIcons.theater_masks_faw5s,
           ),
         ),
       ),

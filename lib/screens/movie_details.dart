@@ -12,6 +12,7 @@ import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
 import 'package:flutter_movie_app/utils/extensions/time_ext.dart';
+import 'package:flutter_movie_app/views/safe_image_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailsScreen extends StatefulWidget implements AutoRouteWrapper {
@@ -222,22 +223,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         bottomLeft: Radius.circular(50),
         bottomRight: Radius.circular(50),
       ),
-      child: movie.backdropPath?.isNotEmpty ?? false
-          ? Image(
-              fit: BoxFit.fill,
-              alignment: Alignment.topCenter,
-              height: 250,
-              image: NetworkImage("$IMAGE_BASE_URL${movie.backdropPath}"),
-            )
-          : Container(
-              width: 150,
-              height: 250,
-              child: Icon(
-                FlutterIcons.theater_masks_faw5s,
-                color: theme.darkMode ? Colors.white12 : Colors.black12,
-                size: 150,
-              ),
-            ),
+      child: SafeImageView(
+        path: movie.backdropPath,
+        height: 250,
+        width: null,
+        icon: FlutterIcons.theater_masks_faw5s,
+        iconSize: 100,
+      ),
     );
   }
 
