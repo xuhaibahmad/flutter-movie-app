@@ -8,6 +8,7 @@ import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
+import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/delegates/movie_search_delegate.dart';
@@ -132,6 +133,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
             movie: viewModel.results[index],
             rotation: calculateRotationAngle(index, viewModel.results.length),
             isOffsetItem: _visibleListIndex != index,
+            onItemClick: (movieId) => openDetails(movieId),
           ),
         ),
       ),
@@ -277,6 +279,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
     } else {
       return 0;
     }
+  }
+
+  openDetails(int movieId) {
+    ExtendedNavigator.of(context).pushNamed(
+      Routes.movieDetailsPage,
+      arguments: MovieDetailsScreenArguments(movieId: movieId),
+    );
   }
 
   @override
