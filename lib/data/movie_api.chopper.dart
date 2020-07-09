@@ -52,17 +52,24 @@ class _$MovieApi extends MovieApi {
   }
 
   @override
-  Future<Response<MovieListResponse>> search(String query) {
+  Future<Response<MovieListResponse>> search(String query, bool includeAdult) {
     final $url = 'https://api.themoviedb.org/3/search/movie';
-    final $params = <String, dynamic>{'query': query};
+    final $params = <String, dynamic>{
+      'query': query,
+      'include_adult': includeAdult
+    };
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<MovieListResponse, MovieListResponse>($request);
   }
 
   @override
-  Future<Response<MovieListResponse>> getByGenre(int genreId) {
+  Future<Response<MovieListResponse>> getByGenre(
+      int genreId, bool includeAdult) {
     final $url = 'https://api.themoviedb.org/3/discover/movie';
-    final $params = <String, dynamic>{'with_genres': genreId};
+    final $params = <String, dynamic>{
+      'with_genres': genreId,
+      'include_adult': includeAdult
+    };
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<MovieListResponse, MovieListResponse>($request);
   }

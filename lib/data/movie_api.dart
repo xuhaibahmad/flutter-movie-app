@@ -40,11 +40,13 @@ abstract class MovieApi extends ChopperService {
   @Get(path: "/search/movie")
   Future<Response<MovieListResponse>> search(
     @Query("query") String query,
+    @Query("include_adult") bool includeAdult,
   );
 
   @Get(path: "/discover/movie")
   Future<Response<MovieListResponse>> getByGenre(
     @Query("with_genres") int genreId,
+    @Query("include_adult") bool includeAdult,
   );
 
   @Get(path: "/genre/movie/list")

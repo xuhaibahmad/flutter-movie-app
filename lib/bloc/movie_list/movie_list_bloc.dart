@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_movie_app/data/app_repository.dart';
 import 'package:flutter_movie_app/data/movie_repository.dart';
 import 'package:flutter_movie_app/models/errors.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
@@ -12,15 +13,17 @@ import 'package:meta/meta.dart';
 part 'movie_list_event.dart';
 part 'movie_list_state.dart';
 
-const EMPTY_STRING = "";
-
 @preResolve
 @lazySingleton
 class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     with AutoResetLazySingleton<MovieListEvent, MovieListState> {
-  final MovieRepository repository;
+  final AppRepository appRepository;
+  final MovieRepository movieRepository;
 
-  MovieListBloc({this.repository}) : super(MovieListInitialState());
+  MovieListBloc({
+    this.appRepository,
+    this.movieRepository,
+  }) : super(MovieListInitialState());
 
   @override
   Stream<MovieListState> mapEventToState(
@@ -29,9 +32,9 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     if (event is GetNowPlayingMovieListEvent) {
       yield MovieListLoadingState();
       try {
-        final response = await repository.getNowPlayingMovies();
+        final response = await movieRepository.getNowPlayingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
-        final genreResponse = await repository.getGenres();
+        final genreResponse = await movieRepository.getGenres();
         final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
@@ -40,9 +43,9 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     } else if (event is GetTrendingMovieListEvent) {
       yield MovieListLoadingState();
       try {
-        final response = await repository.getTrendingMovies();
+        final response = await movieRepository.getTrendingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
-        final genreResponse = await repository.getGenres();
+        final genreResponse = await movieRepository.getGenres();
         final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
@@ -51,9 +54,9 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     } else if (event is GetUpcomingMovieListEvent) {
       yield MovieListLoadingState();
       try {
-        final response = await repository.getUpcomingMovies();
+        final response = await movieRepository.getUpcomingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
-        final genreResponse = await repository.getGenres();
+        final genreResponse = await movieRepository.getGenres();
         final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
@@ -62,9 +65,12 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
     } else if (event is GetMovieListByGenreEvent) {
       yield MovieListLoadingState();
       try {
-        final response = await repository.getMoviesByGenre(event.genreId);
+        final response = await movieRepository.getMoviesByGenre(
+          event.genreId,
+          appRepository.contentFilterEnabled,
+        );
         final movies = MovieListViewModel.fromMovieResponse(response);
-        final genreResponse = await repository.getGenres();
+        final genreResponse = await movieRepository.getGenres();
         final genres = GenreListViewModel.fromGenreResponse(
           event.genreId,
           genreResponse,

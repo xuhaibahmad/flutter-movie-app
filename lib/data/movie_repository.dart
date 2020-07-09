@@ -69,12 +69,15 @@ class MovieRepository {
     }
   }
 
-  Future<MovieListResponse> getMoviesByGenre(int genreId) async {
+  Future<MovieListResponse> getMoviesByGenre(
+    int genreId,
+    bool includeAdult,
+  ) async {
     try {
       if (movieListMemCache.containsKey("$genreId")) {
         return movieListMemCache["$genreId"];
       }
-      final response = await api.getByGenre(genreId);
+      final response = await api.getByGenre(genreId, includeAdult);
       final result = response.body;
       movieListMemCache["$genreId"] = result;
       return result;
@@ -84,12 +87,12 @@ class MovieRepository {
     }
   }
 
-  Future<MovieListResponse> search(String query) async {
+  Future<MovieListResponse> search(String query, bool includeAdult) async {
     try {
       if (movieListMemCache.containsKey(query)) {
         return movieListMemCache[query];
       }
-      final response = await api.search(query);
+      final response = await api.search(query, includeAdult);
       final result = response.body;
       movieListMemCache[query] = result;
       return result;
