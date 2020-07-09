@@ -7,13 +7,18 @@ import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
+import 'package:flutter_movie_app/styling.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
 class MovieSearchDelegate extends SearchDelegate {
+  final AppTheme theme;
   final MovieSearchBloc bloc;
 
-  MovieSearchDelegate(this.bloc);
+  MovieSearchDelegate(this.theme, this.bloc);
+
+  @override
+  ThemeData appBarTheme(BuildContext context) => theme.appBarTheme;
 
   @override
   List<Widget> buildActions(BuildContext context) {

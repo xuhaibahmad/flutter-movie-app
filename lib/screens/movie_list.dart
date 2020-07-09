@@ -88,7 +88,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
             iconSize: 24,
             onPressed: () => showSearch(
               context: context,
-              delegate: MovieSearchDelegate(searchBloc),
+              delegate: MovieSearchDelegate(theme, searchBloc),
             ),
           ),
         ],

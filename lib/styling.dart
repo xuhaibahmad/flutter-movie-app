@@ -42,6 +42,12 @@ class AppTheme {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       );
 
+  ThemeData get appBarTheme => ThemeData(
+        brightness: darkMode ? Brightness.dark : Brightness.light,
+        primaryColor: darkMode ? backgroundDarkColor : backgroundLightColor,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      );
+
   TextTheme get textTheme => TextTheme(
         headline6: headline6,
         caption: caption,
