@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +52,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
   int _selectedTabIndex = 0;
   int _selectedCategoryIndex;
 
+  final _controller = CarouselController();
+
   _MovieListScreenState({this.sheet, this.theme});
 
   @override
@@ -89,17 +93,28 @@ class _MovieListScreenState extends State<MovieListScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<MovieListBloc, MovieListState>(
-        builder: (_, state) {
-          if (state is MovieListLoadedState) {
-            return buildMovieList(state);
-          } else if (state is MovieListErrorState) {
-            return ErrorView();
-          } else {
-            return ProgressView();
-          }
-        },
+      body: BlocListener<MovieListBloc, MovieListState>(
+        listenWhen: (_, state) => state is MovieListLoadedState,
+        listener: (context, state) => scrollToListStart(),
+        child: BlocBuilder<MovieListBloc, MovieListState>(
+          builder: (_, state) {
+            if (state is MovieListLoadedState) {
+              return buildMovieList(state);
+            } else if (state is MovieListErrorState) {
+              return ErrorView();
+            } else {
+              return ProgressView();
+            }
+          },
+        ),
       ),
+    );
+  }
+
+  scrollToListStart() {
+    Timer(
+      Duration(seconds: 1),
+      () => _controller.animateToPage(0),
     );
   }
 
@@ -123,6 +138,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     return Expanded(
       child: Container(
         child: CarouselSlider.builder(
+          carouselController: _controller,
           options: CarouselOptions(
             height: 550.0,
             onPageChanged: (index, _) =>
@@ -242,17 +258,23 @@ class _MovieListScreenState extends State<MovieListScreen> {
           ),
         ),
         selected: selectedId == item.id,
-        onSelected: (_) {
-          _selectedCategoryIndex = index;
-          _selectedTabIndex = null;
-          movieBloc.add(GetMovieListByGenreEvent(item.id));
-        },
+        onSelected: (_) => onGenreSelected(index, item),
       ),
     );
   }
 
+  onGenreSelected(int index, Genre item) {
+    setState(() {
+      _visibleListIndex = 0;
+      _selectedCategoryIndex = index;
+      _selectedTabIndex = null;
+      movieBloc.add(GetMovieListByGenreEvent(item.id));
+    });
+  }
+
   onTabSelected(int index) {
     setState(() {
+      _visibleListIndex = 0;
       _selectedTabIndex = index;
       _selectedCategoryIndex = null;
       if (_selectedTabIndex == 0) {
