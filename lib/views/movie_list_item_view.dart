@@ -94,7 +94,7 @@ class MovieListItemView extends StatelessWidget {
                       height: 400,
                       child: Icon(
                         FlutterIcons.theater_masks_faw5s,
-                        color: Colors.black12,
+                        color: theme.darkMode ? Colors.white12 : Colors.black12,
                         size: 150,
                       ),
                     ),

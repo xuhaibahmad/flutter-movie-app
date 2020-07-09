@@ -57,7 +57,7 @@ class AppTheme {
       );
 
   TextStyle get caption => TextStyle(
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         fontSize: 16,
         color: textColor,
       );

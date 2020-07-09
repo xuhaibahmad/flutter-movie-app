@@ -17,15 +17,12 @@ import 'package:url_launcher/url_launcher.dart';
 class MovieDetailsScreen extends StatefulWidget implements AutoRouteWrapper {
   final int movieId;
 
-  const MovieDetailsScreen({
-    Key key,
-    @required this.movieId,
-  }) : super(key: key);
+  const MovieDetailsScreen({Key key, @required this.movieId}) : super(key: key);
 
   @override
   _MovieDetailsScreenState createState() => _MovieDetailsScreenState(
-        movieId,
-        getIt<AppTheme>(),
+        movieId: movieId,
+        theme: getIt<AppTheme>(),
       );
 
   @override
@@ -40,7 +37,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   final int movieId;
   MovieDetailsBloc bloc;
 
-  _MovieDetailsScreenState(this.movieId, this.theme);
+  _MovieDetailsScreenState({this.movieId, this.theme});
 
   @override
   void didChangeDependencies() {
@@ -176,9 +173,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           SizedBox(height: 20),
           Text("Plot Summary", style: theme.headline1),
           SizedBox(height: 12),
-          Text(movie.overview, style: theme.caption),
-          SizedBox(height: 20),
-          Text("Similar Movies", style: theme.headline1),
+          Text(
+            movie.overview,
+            style: theme.caption,
+            textAlign: TextAlign.justify,
+          ),
         ],
       ),
     );
@@ -223,12 +222,22 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         bottomLeft: Radius.circular(50),
         bottomRight: Radius.circular(50),
       ),
-      child: Image(
-        fit: BoxFit.fill,
-        alignment: Alignment.topCenter,
-        height: 250,
-        image: NetworkImage("$IMAGE_BASE_URL${movie.backdropPath}"),
-      ),
+      child: movie.backdropPath?.isNotEmpty ?? false
+          ? Image(
+              fit: BoxFit.fill,
+              alignment: Alignment.topCenter,
+              height: 250,
+              image: NetworkImage("$IMAGE_BASE_URL${movie.backdropPath}"),
+            )
+          : Container(
+              width: 150,
+              height: 250,
+              child: Icon(
+                FlutterIcons.theater_masks_faw5s,
+                color: theme.darkMode ? Colors.white12 : Colors.black12,
+                size: 150,
+              ),
+            ),
     );
   }
 
@@ -273,7 +282,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   Widget buildRating(MovieDetailsResponse movie) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: [
         Icon(
           FlutterIcons.star_ant,
           size: 24,
@@ -282,35 +291,56 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         SizedBox(height: 4),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Text("${movie.voteAverage}", style: theme.caption),
+          children: [
+            Text(
+              "${movie.voteAverage}",
+              style: theme.caption.copyWith(color: theme.textColorDark),
+            ),
             SizedBox(width: 2),
-            Text("/", style: theme.bodyText1),
-            SizedBox(width: 2),
-            Text("10", style: theme.bodyText1),
+            Text(
+              "/",
+              style: theme.bodyText1.copyWith(color: theme.textColor),
+            ),
+            Text(
+              "10",
+              style: theme.bodyText1.copyWith(color: theme.textColor),
+            ),
           ],
         ),
       ],
     );
   }
 
-  buildSimilarMoviesList(MovieListResponse similarMovies) {
-    return SizedBox(
-      height: 250,
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: similarMovies.results.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = similarMovies.results[index];
-          return Container(
-            padding: EdgeInsets.all(8),
-            child: buildSimilarMovieItem(item),
+  Widget buildSimilarMoviesList(MovieListResponse similarMovies) {
+    return similarMovies.results.isEmpty
+        ? Container()
+        : Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Text("Similar Movies", style: theme.headline1),
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: similarMovies.results.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final item = similarMovies.results[index];
+                      return Container(
+                        padding: EdgeInsets.all(8),
+                        child: buildSimilarMovieItem(item),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
-        },
-      ),
-    );
   }
 
   buildSimilarMovieItem(Item movie) {
@@ -320,9 +350,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        children: [
           Stack(
-            children: <Widget>[
+            children: [
               Card(
                 margin: EdgeInsets.symmetric(horizontal: 24),
                 elevation: 8,
@@ -343,7 +373,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           height: 200,
                           child: Icon(
                             FlutterIcons.theater_masks_faw5s,
-                            color: Colors.black12,
+                            color: theme.darkMode
+                                ? Colors.white12
+                                : Colors.black12,
                             size: 150,
                           ),
                         ),
@@ -379,7 +411,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
               Icon(
                 FlutterIcons.star_ant,
                 size: 16,
