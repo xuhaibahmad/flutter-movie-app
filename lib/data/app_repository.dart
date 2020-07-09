@@ -11,9 +11,9 @@ class AppRepository {
 
   const AppRepository(this._prefs);
 
-  bool get nightModeEnabled => _prefs.getBool(KEY_NIGHT_MODE);
+  bool get nightModeEnabled => _prefs.getBool(KEY_NIGHT_MODE) ?? false;
 
-  bool get contentFilterEnabled => _prefs.getBool(KEY_CONTENT_FILTER);
+  bool get contentFilterEnabled => _prefs.getBool(KEY_CONTENT_FILTER) ?? false;
 
   updateNightMode(bool enable) async {
     return _prefs.setBool(KEY_NIGHT_MODE, enable);

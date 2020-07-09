@@ -17,7 +17,7 @@ class MoviePosterView extends StatelessWidget {
     this.width = 40,
     this.height = 60,
     @required this.icon,
-    this.iconSize,
+    @required this.iconSize,
     this.freeImage = false,
   }) : super(key: key);
 

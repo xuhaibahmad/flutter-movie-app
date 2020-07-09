@@ -8,6 +8,7 @@ import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
 import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_response.dart';
+import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
@@ -303,10 +304,10 @@ class _MovieListScreenState extends State<MovieListScreen> {
     }
   }
 
-  openDetails(int movieId) {
+  openDetails(Item movie) {
     ExtendedNavigator.of(context).pushNamed(
       Routes.movieDetailsPage,
-      arguments: MovieDetailsScreenArguments(movieId: movieId),
+      arguments: MovieDetailsScreenArguments(movie: movie),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_movie_app/screens/movie_list.dart';
 import 'package:flutter_movie_app/screens/movie_details.dart';
+import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
 
 abstract class Routes {
   static const movieListPage = '/';
@@ -50,7 +51,7 @@ class Router extends RouterBase {
         final typedArgs = args as MovieDetailsScreenArguments;
         return MaterialPageRoute<dynamic>(
           builder: (context) =>
-              MovieDetailsScreen(key: typedArgs.key, movieId: typedArgs.movieId)
+              MovieDetailsScreen(key: typedArgs.key, movie: typedArgs.movie)
                   .wrappedRoute(context),
           settings: settings,
         );
@@ -73,6 +74,6 @@ class MovieListScreenArguments {
 //MovieDetailsScreen arguments holder class
 class MovieDetailsScreenArguments {
   final Key key;
-  final int movieId;
-  MovieDetailsScreenArguments({this.key, @required this.movieId});
+  final Item movie;
+  MovieDetailsScreenArguments({this.key, @required this.movie});
 }

@@ -100,24 +100,29 @@ class MovieSearchDelegate extends SearchDelegate {
 
   Widget buildSearchListItem(BuildContext context, Item result) {
     return InkWell(
-      onTap: () => openDetails(context, result.id),
+      onTap: () => openDetails(context, result),
       child: Container(
         padding: EdgeInsets.all(4),
         child: ListTile(
           title: Text(result.title),
-          leading: MoviePosterView(
-            posterPath: result.posterPath,
-            icon: FlutterIcons.theater_masks_faw5s,
+          leading: Container(
+            width: 40,
+            height: 60,
+            child: MoviePosterView(
+              iconSize: 28,
+              posterPath: result.posterPath,
+              icon: FlutterIcons.theater_masks_faw5s,
+            ),
           ),
         ),
       ),
     );
   }
 
-  openDetails(BuildContext context, int movieId) {
+  openDetails(BuildContext context, Item movie) {
     ExtendedNavigator.of(context).pushNamed(
       Routes.movieDetailsPage,
-      arguments: MovieDetailsScreenArguments(movieId: movieId),
+      arguments: MovieDetailsScreenArguments(movie: movie),
     );
   }
 

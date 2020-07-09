@@ -7,7 +7,7 @@ import 'package:flutter_movie_app/views/clickable_mask_view.dart';
 import 'package:flutter_movie_app/views/movie_poster_view.dart';
 
 class MovieListItemView extends StatelessWidget {
-  final Function(int movieId) onItemClick;
+  final Function(Item movie) onItemClick;
   final Item movie;
   final double rotation;
   final bool isOffsetItem;
@@ -24,7 +24,7 @@ class MovieListItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = getIt<AppTheme>();
     return GestureDetector(
-      onTap: () => onItemClick(movie.id),
+      onTap: () => onItemClick(movie),
       child: RotationTransition(
         turns: AlwaysStoppedAnimation(rotation),
         child: Column(
@@ -67,7 +67,7 @@ class MovieListItemView extends StatelessWidget {
     );
   }
 
-  Stack buildPoster(AppTheme theme) {
+  Widget buildPoster(AppTheme theme) {
     return Stack(
       children: [
         Card(
@@ -76,18 +76,22 @@ class MovieListItemView extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50.0),
           ),
-          child: MoviePosterView(
-            posterPath: movie.posterPath,
-            icon: FlutterIcons.theater_masks_faw5s,
-            cornerRadius: 50,
-            width: 300,
-            height: 400,
+          child: Hero(
+            tag: movie,
+            child: MoviePosterView(
+              posterPath: movie.posterPath,
+              icon: FlutterIcons.theater_masks_faw5s,
+              iconSize: 100,
+              cornerRadius: 50,
+              width: 300,
+              height: 400,
+            ),
           ),
         ),
         ClickableMaskView(
           padding: 24,
           rippleColor: theme.transparent,
-          onClick: () => onItemClick(movie.id),
+          onClick: () => onItemClick(movie),
           radius: 50,
         ),
       ],

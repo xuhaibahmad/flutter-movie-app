@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/di/injection.dart';
@@ -25,11 +26,13 @@ class SafeImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     AppTheme theme = getIt<AppTheme>();
     return path?.isNotEmpty ?? false
-        ? Image(
+        ? CachedNetworkImage(
+            imageUrl: "$IMAGE_BASE_URL$path",
             width: freeImage ? null : this.width,
             height: freeImage ? null : this.height,
             fit: BoxFit.fill,
-            image: NetworkImage("$IMAGE_BASE_URL$path"),
+            placeholder: (_, url) => buildIcon(icon, theme),
+            errorWidget: (_, url, e) => buildIcon(Icons.error, theme),
           )
         : Container(
             width: this.width,
@@ -40,5 +43,15 @@ class SafeImageView extends StatelessWidget {
               size: this.iconSize,
             ),
           );
+  }
+
+  Widget buildIcon(IconData icon, AppTheme theme) {
+    return Center(
+      child: Icon(
+        icon,
+        color: theme.darkMode ? Colors.white12 : Colors.black12,
+        size: this.iconSize,
+      ),
+    );
   }
 }
