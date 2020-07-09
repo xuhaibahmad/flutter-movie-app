@@ -19,7 +19,7 @@ The project uses Bloc for state managment, Auto Route for routing and Injectable
 ## Demo
 
 <p align="center">
-<img src="screenshots/Demo.gif" width="250px">
+<img src="screenshots/demo.gif" width="250px">
 </p>
 
 ## Getting Started
