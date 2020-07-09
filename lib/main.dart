@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_movie_app/utils/extensions/context_ext.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/styling.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:logging/logging.dart';
 import 'di/injection.dart';
 import 'package:flutter/foundation.dart' as Foundation;
@@ -41,10 +41,7 @@ class FlutterMoviesApp extends StatelessWidget {
   final AppTheme theme;
   final navigatorKey = GlobalKey<ExtendedNavigatorState>();
 
-  FlutterMoviesApp({
-    Key key,
-    @required this.theme,
-  }) : super(key: key);
+  FlutterMoviesApp({Key key, @required this.theme}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +49,7 @@ class FlutterMoviesApp extends StatelessWidget {
       bloc: BlocProvider.of<AppBloc>(context),
       builder: (context, state) {
         theme.darkMode = state.nightModeEnabled;
-        applySystemColors(theme.darkMode);
+        context.applySystemColors(theme.darkMode);
         return MaterialApp(
           themeMode: theme.themeMode,
           theme: theme.lightTheme,
@@ -66,13 +63,5 @@ class FlutterMoviesApp extends StatelessWidget {
         );
       },
     );
-  }
-
-  applySystemColors(bool darkMode) {
-    final color = darkMode ? Colors.black : Colors.white12;
-    FlutterStatusbarcolor.setStatusBarColor(color);
-    FlutterStatusbarcolor.setNavigationBarColor(color);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(darkMode);
-    FlutterStatusbarcolor.setNavigationBarWhiteForeground(darkMode);
   }
 }

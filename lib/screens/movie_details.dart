@@ -11,7 +11,7 @@ import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/error_view.dart';
 import 'package:flutter_movie_app/views/progress_view.dart';
-import 'package:flutter_movie_app/utils/time_ext.dart';
+import 'package:flutter_movie_app/utils/extensions/time_ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailsScreen extends StatefulWidget implements AutoRouteWrapper {
