@@ -430,7 +430,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   openDetails(int movieId) {
-    ExtendedNavigator.of(context).pushNamed(
+    ExtendedNavigator.of(context).pushReplacementNamed(
       Routes.movieDetailsPage,
       arguments: MovieDetailsScreenArguments(movieId: movieId),
     );
