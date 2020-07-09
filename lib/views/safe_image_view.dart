@@ -9,6 +9,7 @@ class SafeImageView extends StatelessWidget {
   final double height;
   final IconData icon;
   final double iconSize;
+  final bool freeImage;
 
   SafeImageView({
     Key key,
@@ -17,6 +18,7 @@ class SafeImageView extends StatelessWidget {
     this.height,
     this.icon,
     this.iconSize = 32,
+    this.freeImage = false,
   }) : super(key: key);
 
   @override
@@ -24,8 +26,8 @@ class SafeImageView extends StatelessWidget {
     AppTheme theme = getIt<AppTheme>();
     return path?.isNotEmpty ?? false
         ? Image(
-            width: this.width,
-            height: this.height,
+            width: freeImage ? null : this.width,
+            height: freeImage ? null : this.height,
             fit: BoxFit.fill,
             image: NetworkImage("$IMAGE_BASE_URL$path"),
           )

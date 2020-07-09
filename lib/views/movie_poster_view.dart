@@ -8,6 +8,7 @@ class MoviePosterView extends StatelessWidget {
   final double height;
   final IconData icon;
   final double iconSize;
+  final bool freeImage;
 
   const MoviePosterView({
     Key key,
@@ -17,6 +18,7 @@ class MoviePosterView extends StatelessWidget {
     this.height = 60,
     @required this.icon,
     this.iconSize,
+    this.freeImage = false,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class MoviePosterView extends StatelessWidget {
         height: this.height,
         icon: this.icon,
         iconSize: this.iconSize,
+        freeImage: this.freeImage,
       ),
     );
   }
