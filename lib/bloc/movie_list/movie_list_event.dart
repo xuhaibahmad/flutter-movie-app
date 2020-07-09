@@ -10,7 +10,7 @@ class GetTrendingMovieListEvent extends MovieListEvent {}
 class GetUpcomingMovieListEvent extends MovieListEvent {}
 
 class GetMovieListByGenreEvent extends MovieListEvent {
-  final String genreId;
+  final int genreId;
 
   GetMovieListByGenreEvent(this.genreId);
 }

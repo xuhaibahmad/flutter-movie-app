@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_list/movie_list_bloc.dart';
 import 'package:flutter_movie_app/bloc/movie_search/movie_search_bloc.dart';
 import 'package:flutter_movie_app/di/injection.dart';
+import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_response.dart';
 import 'package:flutter_movie_app/models/viewmodels/genre_list/genre_list_viewmodel.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/screens/settings.dart';
@@ -73,7 +74,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           iconSize: 24,
           onPressed: () => sheet.show(context),
         ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: SvgPicture.asset(
               "assets/search.svg",
@@ -92,18 +93,14 @@ class _MovieListScreenState extends State<MovieListScreen> {
           if (state is MovieListLoadedState) {
             return buildMovieList(state);
           } else if (state is MovieListErrorState) {
-            return buildError();
+            return ErrorView();
           } else {
-            return buildLoading();
+            return ProgressView();
           }
         },
       ),
     );
   }
-
-  Widget buildLoading() => ProgressView();
-
-  Widget buildError() => ErrorView();
 
   Widget buildMovieList(MovieListLoadedState state) {
     return Container(
@@ -112,7 +109,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
         children: [
           buildTabs(),
           SizedBox(height: 8),
-          buildCategories(state.genreListViewModel),
+          buildGenres(state.genreListViewModel),
           SizedBox(height: 8),
           buildList(state.movieListViewModel),
           SizedBox(height: 8),
@@ -127,9 +124,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
         child: CarouselSlider.builder(
           options: CarouselOptions(
             height: 550.0,
-            onPageChanged: (index, _) {
-              setState(() => _visibleListIndex = index);
-            },
+            onPageChanged: (index, _) =>
+                setState(() => _visibleListIndex = index),
           ),
           itemCount: viewModel.results.length,
           itemBuilder: (_, index) => MovieListItemView(
@@ -152,7 +148,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           primary: false,
           shrinkWrap: true,
           itemCount: TABS.length,
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (_, index) {
             final item = TABS[index];
             final selected = _selectedTabIndex == index;
             return buildTabListItem(item, selected, index);
@@ -165,7 +161,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   Widget buildTabListItem(String item, bool selected, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: [
         FlatButton(
           child: Text(
             item,
@@ -195,7 +191,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     );
   }
 
-  Widget buildCategories(GenreListViewModel viewModel) {
+  Widget buildGenres(GenreListViewModel viewModel) {
     return Container(
       padding: EdgeInsets.only(left: 12),
       child: SizedBox(
@@ -205,36 +201,50 @@ class _MovieListScreenState extends State<MovieListScreen> {
           primary: false,
           shrinkWrap: true,
           itemCount: viewModel.items.length,
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (_, index) {
             final item = viewModel.items[index];
             final selected = _selectedCategoryIndex == index;
-            return Container(
-              padding: EdgeInsets.all(8),
-              child: ChoiceChip(
-                backgroundColor: theme.transparent,
-                selectedColor: theme.pink,
-                label: Text(item.name,
-                    style: theme.bodyText1.copyWith(
-                      color: selected
-                          ? theme.backgroundLightColor
-                          : theme.textColorDark,
-                    )),
-                shape: StadiumBorder(
-                  side: BorderSide(
-                    color: selected ? theme.transparent : theme.textColorLight,
-                    width: .8,
-                  ),
-                ),
-                selected: viewModel.selectedId == item.id.toString(),
-                onSelected: (_) {
-                  _selectedCategoryIndex = index;
-                  _selectedTabIndex = null;
-                  movieBloc.add(GetMovieListByGenreEvent("${item.id}"));
-                },
-              ),
+            return buildGenreListItem(
+              item,
+              selected,
+              viewModel.selectedId,
+              index,
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget buildGenreListItem(
+    Genre item,
+    bool selected,
+    int selectedId,
+    int index,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: ChoiceChip(
+        backgroundColor: theme.transparent,
+        selectedColor: theme.pink,
+        label: Text(
+          item.name,
+          style: theme.bodyText1.copyWith(
+            color: selected ? theme.backgroundLightColor : theme.textColorDark,
+          ),
+        ),
+        shape: StadiumBorder(
+          side: BorderSide(
+            color: selected ? theme.transparent : theme.textColorLight,
+            width: .8,
+          ),
+        ),
+        selected: selectedId == item.id,
+        onSelected: (_) {
+          _selectedCategoryIndex = index;
+          _selectedTabIndex = null;
+          movieBloc.add(GetMovieListByGenreEvent(item.id));
+        },
       ),
     );
   }

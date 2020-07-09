@@ -60,7 +60,7 @@ class _$MovieApi extends MovieApi {
   }
 
   @override
-  Future<Response<MovieListResponse>> getByGenre(String genreId) {
+  Future<Response<MovieListResponse>> getByGenre(int genreId) {
     final $url = 'https://api.themoviedb.org/3/discover/movie';
     final $params = <String, dynamic>{'with_genres': genreId};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);

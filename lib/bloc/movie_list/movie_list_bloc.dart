@@ -32,10 +32,7 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
         final response = await repository.getNowPlayingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
         final genreResponse = await repository.getGenres();
-        final genres = GenreListViewModel.fromGenreResponse(
-          EMPTY_STRING,
-          genreResponse,
-        );
+        final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
         yield MovieListErrorState(e);
@@ -46,10 +43,7 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
         final response = await repository.getTrendingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
         final genreResponse = await repository.getGenres();
-        final genres = GenreListViewModel.fromGenreResponse(
-          EMPTY_STRING,
-          genreResponse,
-        );
+        final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
         yield MovieListErrorState(e);
@@ -60,10 +54,7 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState>
         final response = await repository.getUpcomingMovies();
         final movies = MovieListViewModel.fromMovieResponse(response);
         final genreResponse = await repository.getGenres();
-        final genres = GenreListViewModel.fromGenreResponse(
-          EMPTY_STRING,
-          genreResponse,
-        );
+        final genres = GenreListViewModel.fromGenreResponse(-1, genreResponse);
         yield MovieListLoadedState(genres, movies);
       } on MovieListError catch (e) {
         yield MovieListErrorState(e);

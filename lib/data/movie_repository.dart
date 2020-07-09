@@ -69,14 +69,14 @@ class MovieRepository {
     }
   }
 
-  Future<MovieListResponse> getMoviesByGenre(String genreId) async {
+  Future<MovieListResponse> getMoviesByGenre(int genreId) async {
     try {
-      if (movieListMemCache.containsKey(genreId)) {
-        return movieListMemCache[genreId];
+      if (movieListMemCache.containsKey("$genreId")) {
+        return movieListMemCache["$genreId"];
       }
       final response = await api.getByGenre(genreId);
       final result = response.body;
-      movieListMemCache[genreId] = result;
+      movieListMemCache["$genreId"] = result;
       return result;
     } on Error catch (e) {
       print(e.stackTrace);

@@ -3,7 +3,7 @@ import 'package:flutter_movie_app/models/api_responses/genre_list/genre_list_res
 const ALLOWED_GENRES = [];
 
 class GenreListViewModel {
-  final String selectedId;
+  final int selectedId;
   final List<Genre> items;
 
   GenreListViewModel({
@@ -12,7 +12,7 @@ class GenreListViewModel {
   });
 
   factory GenreListViewModel.fromGenreResponse(
-    String selectedId,
+    int selectedId,
     GenreListResponse response,
   ) {
     return GenreListViewModel(
