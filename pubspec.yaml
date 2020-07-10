@@ -54,6 +54,7 @@ dev_dependencies:
   injectable_generator: ^0.4.0
   freezed: ^0.10.9
   chopper_generator: ^3.0.4
+  flutter_launcher_icons: ^0.7.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -91,3 +92,8 @@ flutter:
         - asset: fonts/Proxima_Nova_Thin.otf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app_icon.png"
