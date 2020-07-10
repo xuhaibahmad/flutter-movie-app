@@ -6,15 +6,14 @@
 
 - [About](#about)
 - [Demo](#demo)
+- [Dependencies](#dependencies)
 - [Getting Started](#getting_started)
-- [Usage](#usage)
 - [Contributing](#contributing)
+- [Credits](#credits)
 
 ## About
 
 A movie showcase app powered by TMDB API. The main purpose of this project is to learn Flutter and apply best practices to it. While the app is functional, it should only be used as a reference project.
-
-The project uses Bloc for state managment, Auto Route for routing and Injectable for dependency injection.
 
 ## Demo
 
@@ -22,9 +21,17 @@ The project uses Bloc for state managment, Auto Route for routing and Injectable
 <img src="screenshots/demo.gif" width="250px">
 </p>
 
+## Dependencies
+
+- State Managment: [Bloc](https://pub.dev/packages/bloc)
+- Networking: [Chopper](https://pub.dev/packages/chopper)
+- Routing: [Auto Route](https://pub.dev/packages/auto_route)
+- Dependency Injection: [Injectable](https://pub.dev/packages/injectable)
+- Data Classes: [Freezed](https://pub.dev/packages/freezed)
+
 ## Getting Started
 
-The project uses [TMDB](https://developers.themoviedb.org) API, you will need to get your own key and store it in your `.evn` file in the root directory.
+The project uses [TMDB](https://developers.themoviedb.org) API, you will need to get your own key and store it as an environment variable.
 
 ## Contributing
 
