@@ -1,6 +1,6 @@
 # Flutter Movies
 
-![Banner](screenshots/banner.png)
+![Banner](screenshots/banner.jpg)
 
 ## Table of Contents
 
