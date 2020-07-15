@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_movie_app/data/app_repository.dart';
 import 'package:flutter_movie_app/utils/mixins/auto_reset_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -39,8 +40,8 @@ class AppBloc extends Bloc<AppEvent, AppState>
     );
   }
 
-  PreferenceUpdatedState getPreferencesState() {
-    return PreferenceUpdatedState(
+  PreferenceState getPreferencesState() {
+    return PreferenceState(
       nightModeEnabled: repository.nightModeEnabled,
       contentFilterEnabled: repository.contentFilterEnabled,
     );

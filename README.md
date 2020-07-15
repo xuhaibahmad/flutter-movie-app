@@ -1,5 +1,7 @@
 # Flutter Movies
 
+![Coverage](https://raw.githubusercontent.com/xuhaibahmad/flutter-movie-app/master/coverage_badge.svg?sanitize=true)
+
 ![Banner](screenshots/banner.jpg)
 
 ## Table of Contents
