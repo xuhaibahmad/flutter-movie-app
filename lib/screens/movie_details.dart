@@ -60,7 +60,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                 if (state is MovieDetailsLoadedState) {
                   return MovieContentView(
                     theme: theme,
-                    movie: state.viewModel.movie,
+                    movie: state.detailsViewModel.movie,
                   );
                 } else {
                   return Container();

@@ -20,12 +20,13 @@ import 'package:get_it/get_it.dart';
 
 Future<void> $initGetIt(GetIt g, {String environment}) async {
   final appModule = _$AppModule();
-  g.registerLazySingleton<MovieSearchBloc>(
-      () => MovieSearchBloc(g<AppRepository>(), g<MovieRepository>()));
+  g.registerLazySingleton<MovieSearchBloc>(() => MovieSearchBloc(
+      appRepository: g<AppRepository>(),
+      movieRepository: g<MovieRepository>()));
   g.registerFactory<bool>(() => appModule.darkModeEnabled,
       instanceName: 'dark_mode');
   g.registerLazySingleton<MovieDetailsBloc>(
-      () => MovieDetailsBloc(repository: g<MovieRepository>()));
+      () => MovieDetailsBloc(g<MovieRepository>()));
   g.registerLazySingleton<MovieListBloc>(() => MovieListBloc(
       appRepository: g<AppRepository>(),
       movieRepository: g<MovieRepository>()));

@@ -1,10 +1,9 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_movie_app/bloc/app/app_bloc.dart';
-import 'package:flutter_movie_app/data/app_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class MockAppRepository extends Mock implements AppRepository {}
+import 'mocks.dart';
 
 main() {
   MockAppRepository mockRepository;
@@ -15,7 +14,7 @@ main() {
 
   group('AppBloc', () {
     blocTest(
-      'emits AppInitialState when nothing is added',
+      'When nothing is added, then emit initial state with default values',
       build: () async {
         when(mockRepository.nightModeEnabled).thenReturn(false);
         when(mockRepository.contentFilterEnabled).thenReturn(false);
@@ -31,7 +30,7 @@ main() {
     );
 
     blocTest(
-      'emits PreferenceState when GetPreferenceEvent is added',
+      'When preferences are requested, then emit preference state',
       build: () async {
         when(mockRepository.nightModeEnabled).thenReturn(true);
         when(mockRepository.contentFilterEnabled).thenReturn(false);
@@ -44,6 +43,20 @@ main() {
           contentFilterEnabled: false,
         )
       ],
+    );
+
+    blocTest(
+      'When night mode config is update, then emit preference state',
+      build: () async => AppBloc(mockRepository),
+      act: (bloc) => bloc.add(UpdateNightModeEvent(false)),
+      expect: [isA<PreferenceState>()],
+    );
+
+    blocTest(
+      'When content filter config is update, then emit preference state',
+      build: () async => AppBloc(mockRepository),
+      act: (bloc) => bloc.add(UpdateContentFilterEvent(false)),
+      expect: [isA<PreferenceState>()],
     );
   });
 }

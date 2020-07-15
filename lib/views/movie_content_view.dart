@@ -6,6 +6,7 @@ import 'package:flutter_movie_app/bloc/movie_details/movie_details_bloc.dart';
 import 'package:flutter_movie_app/data/movie_api.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_details/movie_details_response.dart';
 import 'package:flutter_movie_app/models/api_responses/movie_list/movie_list_response.dart';
+import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/router/router.gr.dart';
 import 'package:flutter_movie_app/styling.dart';
 import 'package:flutter_movie_app/views/clickable_mask_view.dart';
@@ -64,7 +65,7 @@ class _MovieContentViewState extends State<MovieContentView>
   }
 
   Widget buildMovieDetails(MovieDetailsLoadedState state) {
-    final movie = state.viewModel.movie;
+    final movie = state.detailsViewModel.movie;
     return Stack(
       children: [
         Container(
@@ -76,7 +77,7 @@ class _MovieContentViewState extends State<MovieContentView>
               const SizedBox(height: 100),
               buildContent(movie),
               const SizedBox(height: 12),
-              buildSimilarMoviesList(state.viewModel.similarMovies),
+              buildSimilarMoviesList(state.similarViewModel),
               const SizedBox(height: 12),
             ],
           ),
@@ -265,7 +266,7 @@ class _MovieContentViewState extends State<MovieContentView>
     );
   }
 
-  Widget buildSimilarMoviesList(MovieListResponse similarMovies) {
+  Widget buildSimilarMoviesList(MovieListViewModel similarMovies) {
     return similarMovies.results.isEmpty
         ? Container()
         : Container(

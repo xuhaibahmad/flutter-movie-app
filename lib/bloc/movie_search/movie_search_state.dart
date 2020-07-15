@@ -8,7 +8,7 @@ class MovieSearchInitialState extends MovieSearchState {}
 class MovieSearchLoadingState extends MovieSearchState {}
 
 class MovieSearchErrorState extends MovieSearchState {
-  final MovieSearchError error;
+  final Error error;
 
   MovieSearchErrorState(this.error);
 }

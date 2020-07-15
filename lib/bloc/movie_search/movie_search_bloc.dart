@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_movie_app/data/app_repository.dart';
 import 'package:flutter_movie_app/data/movie_repository.dart';
-import 'package:flutter_movie_app/models/errors.dart';
 import 'package:flutter_movie_app/models/viewmodels/movie_list/movie_list_viewmodel.dart';
 import 'package:flutter_movie_app/utils/mixins/auto_reset_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -19,10 +18,10 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState>
   final AppRepository appRepository;
   final MovieRepository movieRepository;
 
-  MovieSearchBloc(
+  MovieSearchBloc({
     this.appRepository,
     this.movieRepository,
-  ) : super(MovieSearchInitialState());
+  }) : super(MovieSearchInitialState());
 
   @override
   Stream<MovieSearchState> mapEventToState(
@@ -31,13 +30,12 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState>
     if (event is SearchMoviesEvent) {
       yield MovieSearchLoadingState();
       try {
-        final response = await movieRepository.search(
+        final movies = await movieRepository.search(
           event.query,
           appRepository.contentFilterEnabled,
         );
-        final movies = MovieListViewModel.fromMovieResponse(response);
         yield MovieSearchLoadedState(movies);
-      } on MovieSearchError catch (e) {
+      } on Error catch (e) {
         yield MovieSearchErrorState(e);
       }
     }

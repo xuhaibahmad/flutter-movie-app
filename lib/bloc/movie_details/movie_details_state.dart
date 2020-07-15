@@ -1,20 +1,37 @@
 part of 'movie_details_bloc.dart';
 
 @immutable
-abstract class MovieDetailsState {}
+abstract class MovieDetailsState extends Equatable {}
 
-class MovieDetailsInitial extends MovieDetailsState {}
-
-class MovieDetailsLoadingState extends MovieDetailsState {}
-
-class MovieDetailsErrorState extends MovieDetailsState {
-  final MovieDetailsError error;
-
-  MovieDetailsErrorState(this.error);
+@immutable
+class MovieDetailsInitialState extends MovieDetailsState {
+  @override
+  List<Object> get props => [];
 }
 
-class MovieDetailsLoadedState extends MovieDetailsState {
-  final MovieDetailsViewModel viewModel;
+@immutable
+class MovieDetailsLoadingState extends MovieDetailsState {
+  @override
+  List<Object> get props => [];
+}
 
-  MovieDetailsLoadedState(this.viewModel);
+@immutable
+class MovieDetailsErrorState extends MovieDetailsState {
+  final Error error;
+
+  MovieDetailsErrorState(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+@immutable
+class MovieDetailsLoadedState extends MovieDetailsState {
+  final MovieDetailsViewModel detailsViewModel;
+  final MovieListViewModel similarViewModel;
+
+  MovieDetailsLoadedState(this.detailsViewModel, this.similarViewModel);
+
+  @override
+  List<Object> get props => [detailsViewModel, similarViewModel];
 }

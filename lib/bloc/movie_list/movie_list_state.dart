@@ -1,12 +1,21 @@
 part of 'movie_list_bloc.dart';
 
 @immutable
-abstract class MovieListState {}
+abstract class MovieListState extends Equatable {}
 
-class MovieListInitialState extends MovieListState {}
+@immutable
+class MovieListInitialState extends MovieListState {
+  @override
+  List<Object> get props => [];
+}
 
-class MovieListLoadingState extends MovieListState {}
+@immutable
+class MovieListLoadingState extends MovieListState {
+  @override
+  List<Object> get props => [];
+}
 
+@immutable
 class MovieListLoadedState extends MovieListState {
   final GenreListViewModel genreListViewModel;
   final MovieListViewModel movieListViewModel;
@@ -15,10 +24,17 @@ class MovieListLoadedState extends MovieListState {
     this.genreListViewModel,
     this.movieListViewModel,
   );
+
+  @override
+  List<Object> get props => [genreListViewModel, movieListViewModel];
 }
 
+@immutable
 class MovieListErrorState extends MovieListState {
-  final MovieListError error;
+  final Error error;
 
   MovieListErrorState(this.error);
+
+  @override
+  List<Object> get props => [error];
 }
